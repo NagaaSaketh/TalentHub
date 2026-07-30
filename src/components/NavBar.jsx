@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRoundIcon } from "lucide-react";
 
-const ApplicantNavBar = ({ showSearch = true }) => {
+const NavBar = ({ showSearch = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -79,18 +79,41 @@ const ApplicantNavBar = ({ showSearch = true }) => {
                 </span>
               </div>
             </div>
-
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 w-56 rounded-box bg-base-100 shadow-lg z-50"
             >
               <li>
-                <Link to="/applicant/profile">Profile</Link>
+                <Link
+                  to={
+                    user?.role === "recruiter"
+                      ? "/recruiter/profile"
+                      : "/applicant/profile"
+                  }
+                >
+                  Profile
+                </Link>
               </li>
 
               <li>
-                <Link to="/applicant">Dashboard</Link>
+                <Link
+                  to={user?.role === "recruiter" ? "/recruiter" : "/applicant"}
+                >
+                  Dashboard
+                </Link>
               </li>
+
+              {user?.role === "recruiter" && (
+                <li>
+                  <Link to="/recruiter/publish-job">Publish New Job</Link>
+                </li>
+              )}
+
+              {user?.role === "applicant" && (
+                <li>
+                  <Link to="/applicant/bookmarks">My Job Bookmarks</Link>
+                </li>
+              )}
 
               <li>
                 <button onClick={handleLogout}>Logout</button>
@@ -100,24 +123,30 @@ const ApplicantNavBar = ({ showSearch = true }) => {
         </div>
       </div>
 
-      <div className="md:hidden px-4 py-3 bg-base-100 shadow-sm">
-        <label className="input input-bordered w-full">
-          <svg
-            className="h-5 w-5 opacity-60"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
+      {showSearch && (
+        <div className="md:hidden px-4 py-3 bg-base-100 shadow-sm">
+          <label className="input input-bordered w-full">
+            <svg
+              className="h-5 w-5 opacity-60"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
 
-          <input type="search" className="grow" placeholder="Search jobs..." />
-        </label>
-      </div>
+            <input
+              type="search"
+              className="grow"
+              placeholder="Search jobs..."
+            />
+          </label>
+        </div>
+      )}
     </>
   );
 };
 
-export default ApplicantNavBar;
+export default NavBar;

@@ -87,6 +87,7 @@ const jobSlice = createSlice({
     builder
       .addCase(fetchAllJobs.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
       .addCase(fetchAllJobs.fulfilled, (state, action) => {
         ((state.status = "success"),
@@ -100,6 +101,7 @@ const jobSlice = createSlice({
 
       .addCase(fetchJobDetails.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
 
       .addCase(fetchJobDetails.fulfilled, (state, action) => {

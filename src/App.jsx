@@ -5,13 +5,16 @@ import { useEffect, lazy, Suspense } from "react";
 import { fetchCurrentUser } from "./utils/auth/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ApplicantLayout from "./components/ApplicantLayout";
-import ApplicantProfile from "./pages/ApplicantProfile";
+import RecruiterLayout from "./components/RecruiterLayout";
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const JobListing = lazy(() => import("./pages/JobListing"));
 const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
 const JobDetails = lazy(() => import("./pages/JobDetails"));
+const ApplicantProfile = lazy(() => import("./pages/ApplicantProfile"));
+const PublishJob = lazy(() => import("./pages/PublishJob"));
+const RecruiterProfile = lazy(() => import("./pages/RecruiterProfile"));
 
 function App() {
   const dispatch = useDispatch();
@@ -91,13 +94,17 @@ function App() {
             <Route path="job/:id" element={<JobDetails />} />
           </Route>
           <Route
-            path="/recruiter/*"
+            path="/recruiter"
             element={
               <ProtectedRoute allowedRoles={["recruiter"]}>
-                <RecruiterDashboard />
+                <RecruiterLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<RecruiterDashboard />} />
+            <Route path="profile" element={<RecruiterProfile />} />
+            <Route path="publish-job" element={<PublishJob />} />
+          </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Suspense>

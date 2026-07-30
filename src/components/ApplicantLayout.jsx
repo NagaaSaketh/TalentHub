@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import ApplicantNavBar from "../components/ApplicantNavBar";
+import NavBar from "./NavBar";
 
 const ApplicantLayout = () => {
   const location = useLocation();
@@ -9,7 +9,7 @@ const ApplicantLayout = () => {
     hideSearchRoutes.includes(location.pathname);
   return (
     <>
-      <ApplicantNavBar showSearch={!hideSearch} />
+      <NavBar showSearch={!hideSearch} />
       <Outlet />
     </>
   );
