@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRoundIcon } from "lucide-react";
 
-const ApplicantNavBar = () => {
+const ApplicantNavBar = ({ showSearch = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -26,27 +26,28 @@ const ApplicantNavBar = () => {
             <span className="text-xl md:text-2xl font-bold">TalentHub</span>
           </Link>
         </div>
+        {showSearch && (
+          <div className="hidden md:flex flex-1 justify-center px-6">
+            <label className="input input-bordered w-full max-w-xl">
+              <svg
+                className="h-5 w-5 opacity-60"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
 
-        <div className="hidden md:flex flex-1 justify-center px-6">
-          <label className="input input-bordered w-full max-w-xl">
-            <svg
-              className="h-5 w-5 opacity-60"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-
-            <input
-              type="search"
-              placeholder="Search jobs, companies..."
-              className="grow"
-            />
-          </label>
-        </div>
+              <input
+                type="search"
+                placeholder="Search jobs, companies..."
+                className="grow"
+              />
+            </label>
+          </div>
+        )}
 
         <div className="flex-1 flex justify-end items-center gap-2">
           <button className="btn btn-ghost btn-circle">

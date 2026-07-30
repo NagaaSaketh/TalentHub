@@ -1,16 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import {
-  Menu,
-  IndianRupee,
-  MapPin,
-  Briefcase,
-  Bookmark,
-  BookmarkCheck,
-} from "lucide-react";
+import { Menu, IndianRupee, MapPin, Briefcase, Bookmark } from "lucide-react";
+import { motion } from "framer-motion";
 
 import FilterBar from "../components/FilterBar";
 import { fetchAllJobs } from "../utils/jobs/jobSlice";
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      ease: "easeOut",
+    },
+  },
+};
 
 const JobListing = () => {
   const dispatch = useDispatch();
@@ -41,46 +60,77 @@ const JobListing = () => {
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
                 <h1 className="text-4xl font-bold">All Jobs</h1>
 
                 <p className="text-base-content/60">{jobs.length} jobs found</p>
-              </div>
+              </motion.div>
 
-              <select className="select select-bordered w-full md:w-60">
+              <motion.select
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="select select-bordered w-full md:w-60"
+              >
                 <option>Most Recent</option>
                 <option>Salary: Low to High</option>
                 <option>Salary: High to Low</option>
-              </select>
+              </motion.select>
             </div>
 
-            <div className="space-y-4">
+
+            <motion.div
+              className="space-y-5"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
               {jobs.map((job) => (
-                <div
+                <motion.div
                   key={job._id}
-                  className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-lg transition-all duration-300"
+                  variants={cardVariants}
+                  whileHover={{
+                    y: -5,
+                    scale: 1.01,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 280,
+                    damping: 22,
+                  }}
+                  className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-lg"
                 >
-                  <div className="card-body p-5">
+                  <div className="card-body p-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                      <div className="flex gap-4">
+                      <div className="flex gap-5 flex-1">
                         <div className="avatar">
                           <div className="w-14 h-14 rounded-xl border border-base-300 bg-base-100 flex items-center justify-center">
                             <span className="text-xl font-bold text-black">
-                              {job.company?.charAt(0).toUpperCase()}
+                              {(job.company)
+                                ?.charAt(0)
+                                .toUpperCase()}
                             </span>
                           </div>
                         </div>
 
                         <div>
-                          <h2 className="text-xl font-semibold">{job.title}</h2>
+                          <h2 className="text-2xl font-semibold">
+                            {job.title}
+                          </h2>
 
-                          <p className="text-base-content/70">{job.company}</p>
+                          <p className="text-sm text-base-content/60 mt-1">
+                            {job.company}
+                          </p>
 
-                          <div className="flex flex-wrap items-center gap-5 mt-4 text-sm text-base-content/70">
+                          <div className="flex flex-wrap items-center gap-6 mt-5 text-sm text-base-content/70">
                             <div className="flex items-center gap-1">
                               <IndianRupee size={16} />
                               <span>
-                                {job.salary.min} - {job.salary.max} LPA
+                                {job.salary?.min} - {job.salary?.max} LPA
                               </span>
                             </div>
 
@@ -98,19 +148,25 @@ const JobListing = () => {
                       </div>
 
                       <div className="flex flex-row md:flex-col items-end justify-between gap-4">
-                        <button className="btn btn-ghost btn-circle">
-                          <Bookmark size={20} />
-                        </button>
-
-                        <button className="btn btn-primary px-8">
-                          View Job
-                        </button>
+                        <Link to={`job/${job._id}`}>
+                          <motion.button
+                            whileHover={{
+                              scale: 1.05,
+                            }}
+                            whileTap={{
+                              scale: 0.95,
+                            }}
+                            className="btn btn-primary px-8"
+                          >
+                            View Job
+                          </motion.button>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </main>
         </div>
       </div>

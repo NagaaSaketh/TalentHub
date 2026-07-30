@@ -11,6 +11,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const JobListing = lazy(() => import("./pages/JobListing"));
 const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
+const JobDetails = lazy(() => import("./pages/JobDetails"));
 
 function App() {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ function App() {
           >
             <Route index element={<JobListing />} />
             <Route path="profile" element={<ApplicantProfile />} />
+            <Route path="job/:id" element={<JobDetails />} />
           </Route>
           <Route
             path="/recruiter/*"

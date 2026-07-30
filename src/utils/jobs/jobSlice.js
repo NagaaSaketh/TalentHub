@@ -15,10 +15,57 @@ export const fetchAllJobs = createAsyncThunk(
   },
 );
 
+export const fetchJobDetails = createAsyncThunk(
+  "jobs/details",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/jobs/${jobId}/details`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch job details",
+      );
+    }
+  },
+);
+
+export const applyJob = createAsyncThunk(
+  "jobs/apply",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/jobs/${jobId}/apply`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to apply ",
+      );
+    }
+  },
+);
+
+export const withdrawJob = createAsyncThunk(
+  "jobs/withdraw",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/jobs/${jobId}/withdraw`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to withdraw job",
+      );
+    }
+  },
+);
+
 const jobSlice = createSlice({
   name: "jobs",
   initialState: {
     jobs: [],
+    selectedJob: null,
+    hasApplied: false,
+    recruiterProfile: null,
+    similarJobs: [],
+    applicantsCount: 0,
     status: "loading",
     error: null,
   },
@@ -36,9 +83,27 @@ const jobSlice = createSlice({
       .addCase(fetchAllJobs.rejected, (state) => {
         ((state.status = "failed"), (state.jobs = []));
         state.error = null;
+      })
+
+      .addCase(fetchJobDetails.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(fetchJobDetails.fulfilled, (state, action) => {
+        ((state.status = "success"),
+          (state.selectedJob = action.payload.job),
+          (state.applicantsCount = action.payload.applicantsCount),
+          (state.recruiterProfile = action.payload.recruiterProfile),
+          (state.similarJobs = action.payload.similarJobs),
+          (state.hasApplied = action.payload.hasApplied));
+        state.error = null;
+      })
+
+      .addCase(fetchJobDetails.rejected, (state, action) => {
+        ((state.status = "failed"), (state.jobs = []));
+        state.error = action.payload;
       });
   },
 });
-
 
 export default jobSlice.reducer;
