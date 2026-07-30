@@ -36,9 +36,7 @@ export const applyJob = createAsyncThunk(
       const res = await api.post(`/jobs/${jobId}/apply`);
       return res.data;
     } catch (err) {
-      return rejectWithValue(
-        err.response?.data?.message || "Failed to apply ",
-      );
+      return rejectWithValue(err.response?.data?.message || "Failed to apply ");
     }
   },
 );
@@ -57,12 +55,27 @@ export const withdrawJob = createAsyncThunk(
   },
 );
 
+export const bookMarkJob = createAsyncThunk(
+  "jobs/bookmark",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/jobs/${jobId}/bookmark`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to bookmark job",
+      );
+    }
+  },
+);
+
 const jobSlice = createSlice({
   name: "jobs",
   initialState: {
     jobs: [],
     selectedJob: null,
     hasApplied: false,
+    hasBookmarked: false,
     recruiterProfile: null,
     similarJobs: [],
     applicantsCount: 0,
@@ -90,12 +103,13 @@ const jobSlice = createSlice({
       })
 
       .addCase(fetchJobDetails.fulfilled, (state, action) => {
-        ((state.status = "success"),
-          (state.selectedJob = action.payload.job),
-          (state.applicantsCount = action.payload.applicantsCount),
-          (state.recruiterProfile = action.payload.recruiterProfile),
-          (state.similarJobs = action.payload.similarJobs),
-          (state.hasApplied = action.payload.hasApplied));
+        (((state.status = "success"),
+        (state.selectedJob = action.payload.job),
+        (state.applicantsCount = action.payload.applicantsCount),
+        (state.recruiterProfile = action.payload.recruiterProfile),
+        (state.similarJobs = action.payload.similarJobs),
+        (state.hasApplied = action.payload.hasApplied)),
+          (state.hasBookmarked = action.payload.hasBookmarked));
         state.error = null;
       })
 

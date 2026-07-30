@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { applyJob, fetchJobDetails, withdrawJob } from "../utils/jobs/jobSlice";
+import {
+  applyJob,
+  bookMarkJob,
+  fetchJobDetails,
+  withdrawJob,
+} from "../utils/jobs/jobSlice";
 import { motion, AnimatePresence } from "framer-motion";
-import { IndianRupee, Briefcase, MapPinIcon, Bookmark } from "lucide-react";
+import {
+  IndianRupee,
+  Briefcase,
+  MapPinIcon,
+  Bookmark,
+  BookmarkOff,
+} from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,6 +26,7 @@ const JobDetails = () => {
     similarJobs,
     applicantsCount,
     hasApplied,
+    hasBookmarked,
   } = useSelector((state) => state.jobs);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("details");
@@ -50,6 +62,22 @@ const JobDetails = () => {
 
       await dispatch(fetchJobDetails(id));
 
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err) {
+      setError(err);
+      setSuccess("");
+
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleBookmark = async () => {
+    try {
+      const res = await dispatch(bookMarkJob(id)).unwrap();
+      setSuccess(res.message || "Bookmark successful!");
+      setError("");
+
+      await dispatch(fetchJobDetails(id));
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
       setError(err);
@@ -269,9 +297,9 @@ const JobDetails = () => {
                   </button>
                 </div>
 
-                <button className="btn btn-outline">
-                  {" "}
-                  <Bookmark /> Save Job
+                <button onClick={handleBookmark} className="btn btn-outline">
+                  {hasBookmarked ? <BookmarkOff /> : <Bookmark />}
+                  {hasBookmarked ? "Remove Bookmark" : "Save Job"}
                 </button>
               </div>
             </div>
@@ -322,7 +350,7 @@ const JobDetails = () => {
                 </h2>
 
                 <ul className="list bg-base-100 rounded-box">
-                  {similarJobs.slice(0, 2).map((job,index) => (
+                  {similarJobs.slice(0, 2).map((job, index) => (
                     <motion.li
                       key={job._id}
                       className="list-row"
@@ -330,7 +358,7 @@ const JobDetails = () => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
                         duration: 0.3,
-                        delay: {index} * 0.1,
+                        delay: { index } * 0.1,
                       }}
                     >
                       <div className="avatar placeholder">
