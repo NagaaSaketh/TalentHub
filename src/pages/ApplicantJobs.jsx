@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   fetchApplications,
   withdrawJob,
   applyJob,
 } from "../utils/applicant/applicantSlice";
+import api from "../api/axios";
 
 const ApplicantJobs = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,9 @@ const ApplicantJobs = () => {
   const [filter, setFilter] = useState("All");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [prepData, setPrepData] = useState(null);
+  const [prepLoading, setPrepLoading] = useState(false);
+  const [prepError, setPrepError] = useState(null);
 
   const handleWithdraw = async (jobId) => {
     try {
@@ -44,6 +48,25 @@ const ApplicantJobs = () => {
     } catch (err) {
       setError(err);
       setSuccess("");
+    }
+  };
+
+  const handlePrepareInterview = async (jobId) => {
+    setPrepData(null);
+    setPrepError(null);
+    setPrepLoading(true);
+    document.getElementById("interview_prep_modal").showModal();
+
+    try {
+      const res = await api.post(`/ai/applicant/guide/${jobId}`);
+      setPrepData(res.data.data); // { questions, topicsToRevise, preparationTips }
+    } catch (err) {
+      setPrepError(
+        err.response?.data?.message ||
+          "Unable to generate interview prep right now.",
+      );
+    } finally {
+      setPrepLoading(false);
     }
   };
 
@@ -193,6 +216,25 @@ const ApplicantJobs = () => {
                                 View Application Details
                               </button>
                             </li>
+                            <li>
+                              <button
+                                onClick={() =>
+                                  handlePrepareInterview(application.job._id)
+                                }
+                                className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Sparkles className="w-4 h-4 text-violet-600" />
+                                  <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
+                                    Interview Coach
+                                  </span>
+                                </div>
+
+                                <span className="badge badge-secondary badge-xs animate-pulse">
+                                  AI
+                                </span>
+                              </button>
+                            </li>
                           </ul>
                         </div>
                       </td>
@@ -282,6 +324,62 @@ const ApplicantJobs = () => {
               </button>
             )}
 
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      <dialog id="interview_prep_modal" className="modal">
+        <div className="modal-box max-w-2xl">
+          <h3 className="font-bold text-2xl mb-4">✨ Interview Preparation</h3>
+
+          {prepLoading && (
+            <div className="flex justify-center py-8">
+              <span className="loading loading-spinner loading-lg" />
+            </div>
+          )}
+
+          {prepError && (
+            <div role="alert" className="alert alert-error text-sm">
+              <span>{prepError}</span>
+            </div>
+          )}
+
+          {prepData && (
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-semibold mb-2">Interview Questions</h4>
+                <ol className="list-decimal list-inside space-y-1">
+                  {prepData.questions.map((q, i) => (
+                    <li key={i}>{q}</li>
+                  ))}
+                </ol>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">Topics to Revise</h4>
+                <div className="flex flex-wrap gap-2">
+                  {prepData.topicsToRevise.map((topic, i) => (
+                    <span key={i} className="badge badge-primary">
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">Preparation Tips</h4>
+                <ul className="list-disc list-inside space-y-1 opacity-80">
+                  {prepData.preparationTips.map((tip, i) => (
+                    <li key={i}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          <div className="modal-action">
             <form method="dialog">
               <button className="btn">Close</button>
             </form>

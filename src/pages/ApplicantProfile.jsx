@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CircleCheckBig, CircleX } from "lucide-react";
+import { CircleCheckBig, CircleX, BriefcaseBusiness } from "lucide-react";
 import {
   updateApplicantProfile,
   uploadApplicantPhoto,
@@ -188,9 +188,10 @@ const ApplicantProfile = () => {
                   Applicant
                 </div>
 
-                <div>
-                  <span className="text-sm">
-                    YoE: {profile.totalExperience}
+                <div className="flex items-center gap-2 mt-2 text-lg">
+                  <BriefcaseBusiness size={18} className="text-primary" />
+                  <span className="text-sm font-semibold">
+                    {profile.totalExperience} Years of Experience
                   </span>
                 </div>
 

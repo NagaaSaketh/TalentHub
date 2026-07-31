@@ -5,7 +5,7 @@ import {
   shortlistApplicant,
   rejectApplicant,
 } from "../utils/recruiter/recruiterSlice";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical,Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

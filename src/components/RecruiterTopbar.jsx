@@ -18,13 +18,15 @@ const RecruiterTopbar = () => {
         <h1 className="text-3xl font-bold">Recruiter Portal</h1>
       </div>
 
-      <button className="btn btn-ghost btn-circle">
-        <Bell />
-      </button>
+      <div>
+        <h2 className="text-xl font-semibold ">Welcome back, {user.fullname} </h2>
+      </div>
 
       <div className="avatar ml-4">
         <div className=" flex items-center justify-center w-12 rounded-full bg-primary text-primary-content">
-          <span className="font-bold">{user?.fullname?.charAt(0).toUpperCase()}</span>
+          <span className="font-bold">
+            {user?.fullname?.charAt(0).toUpperCase()}
+          </span>
         </div>
       </div>
     </nav>
