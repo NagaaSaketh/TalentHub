@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 
 const ApplicantLayout = () => {
   const location = useLocation();
-  const hideSearchRoutes = ["/applicant/profile"];
+  const hideSearchRoutes = ["/applicant/profile","/applicant/dashboard"];
   const hideSearch =
     location.pathname.startsWith("/applicant/job") ||
     hideSearchRoutes.includes(location.pathname);

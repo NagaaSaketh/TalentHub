@@ -6,7 +6,7 @@ import { UsersRoundIcon } from "lucide-react";
 const NavBar = ({ showSearch = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { user, profile } = useSelector((state) => state.user);
 
   const handleLogout = async () => {
     try {
@@ -50,23 +50,7 @@ const NavBar = ({ showSearch = true }) => {
         )}
 
         <div className="flex-1 flex justify-end items-center gap-2">
-          <button className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1"
-              />
-            </svg>
-          </button>
-
+          <h2 className="text-xl font-bold px-2">Welcome back, {user.fullname}</h2>
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -74,9 +58,13 @@ const NavBar = ({ showSearch = true }) => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full bg-neutral text-neutral-content flex items-center justify-center">
-                <span className="font-semibold">
-                  {user?.fullname?.charAt(0).toUpperCase()}
-                </span>
+                {profile?.photo ? (
+                  <img src={profile?.photo} alt="profile-pic" />
+                ) : (
+                  <span className="font-semibold">
+                    {user?.fullname?.charAt(0).toUpperCase()}
+                  </span>
+                )}
               </div>
             </div>
             <ul
@@ -97,7 +85,11 @@ const NavBar = ({ showSearch = true }) => {
 
               <li>
                 <Link
-                  to={user?.role === "recruiter" ? "/recruiter" : "/applicant/dashboard"}
+                  to={
+                    user?.role === "recruiter"
+                      ? "/recruiter"
+                      : "/applicant/dashboard"
+                  }
                 >
                   Dashboard
                 </Link>

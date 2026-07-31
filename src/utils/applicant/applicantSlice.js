@@ -96,6 +96,45 @@ export const fetchApplications = createAsyncThunk(
   },
 );
 
+export const updateApplicantProfile = createAsyncThunk(
+  "applicant/update",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/applicant/profile", formData);
+
+      return res.data.applicant;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  },
+);
+
+export const uploadApplicantPhoto = createAsyncThunk(
+  "applicant/photo",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/applicant/profile/photo", data);
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  },
+);
+
+export const uploadResume = createAsyncThunk(
+  "applicant/resume",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/applicant/profile/resume", data);
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  },
+);
+
 const applicantsSlice = createSlice({
   name: "jobs",
   initialState: {
@@ -176,12 +215,12 @@ const applicantsSlice = createSlice({
 
       .addCase(fetchApplications.fulfilled, (state, action) => {
         state.status = "success";
-        state.applications = action.payload
+        state.applications = action.payload;
       })
       .addCase(fetchApplications.rejected, (state, action) => {
         state.status = "failed";
-        state.applications = []
-        state.error = action.payload
+        state.applications = [];
+        state.error = action.payload;
       });
   },
 });
