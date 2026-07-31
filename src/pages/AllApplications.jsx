@@ -176,14 +176,6 @@ const AllApplications = () => {
                   </a>
                 </li>
               )}
-
-              {/* <li>
-                <button>Shortlist</button>
-              </li>
-
-              <li>
-                <button>Reject</button>
-              </li> */}
             </ul>
             <dialog id="applicant_modal" className="modal">
               <div className="modal-box max-w-3xl">
@@ -195,8 +187,8 @@ const AllApplications = () => {
 
                     <div className="flex items-center gap-5 mb-8">
                       <div className="avatar placeholder">
-                        <div className="w-20 rounded-full bg-primary text-primary-content">
-                          <span className="text-3xl">
+                        <div className="w-16 flex items-center justify-center rounded-full shadow-lg bg-primary text-primary-content">
+                          <span className="text-2xl font-bold">
                             {selectedApplication.applicant.user.fullname
                               .charAt(0)
                               .toUpperCase()}
@@ -205,94 +197,86 @@ const AllApplications = () => {
                       </div>
 
                       <div>
-                        <h2 className="text-xl font-bold">
+                        <h2 className="text-2xl font-bold">
                           {selectedApplication.applicant.user.fullname}
                         </h2>
 
-                        <p className="opacity-70">
+                        <p className="text-base-content/60">
                           {selectedApplication.applicant.user.email}
                         </p>
+
+                        <div className="mt-2 flex gap-2">
+                          <div className="badge badge-outline">
+                            Years of Experience:{" "}
+                            {selectedApplication.applicant.totalExperience}{" "}
+                          </div>
+
+                          <div className="badge badge-outline">
+                            Current Location:{" "}
+                            {selectedApplication.applicant.location}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-5">
-                      <div className="card bg-base-200">
-                        <div className="card-body p-4">
-                          <h4 className="font-semibold">
-                            Personal Information
-                          </h4>
+                      <div className="card bg-base-200 border border-base-300">
+                        <div className="card-body">
+                          <h3 className="card-title">Job Applied</h3>
 
-                          <p>
-                            <strong>Location:</strong>{" "}
-                            {selectedApplication.applicant.location}
+                          <p className="text-md font-bold">
+                            {selectedApplication.job.title}
                           </p>
-
-                          <p>
-                            <strong>Total Experience:</strong>{" "}
-                            {selectedApplication.applicant.totalExperience}{" "}
-                            Years
-                          </p>
-
-                          <div className="mt-4">
-                            <h4 className="font-semibold mb-2">Experience</h4>
-
-                            {selectedApplication.applicant.experience?.length >
-                            0 ? (
-                              selectedApplication.applicant.experience.map(
-                                (exp) => (
-                                  <div
-                                    key={exp._id}
-                                    className="border rounded-lg p-3 mb-3 bg-base-200"
-                                  >
-                                    <p>
-                                      <strong>Company:</strong> {exp.company}
-                                    </p>
-
-                                    <p>
-                                      <strong>Position:</strong> {exp.position}
-                                    </p>
-                                  </div>
-                                ),
-                              )
-                            ) : (
-                              <p className="text-base-content/60">
-                                No experience added.
-                              </p>
-                            )}
-                          </div>
-
-                          <p>
-                            <strong>Applied:</strong>{" "}
-                            {new Date(
-                              selectedApplication.createdAt,
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="card bg-base-200">
-                        <div className="card-body p-4">
-                          <h4 className="font-semibold">Job Applied</h4>
-
-                          <p>{selectedApplication.job.title}</p>
 
                           <p className="opacity-70">
                             {selectedApplication.job.company}
                           </p>
 
-                          <p>{selectedApplication.job.location}</p>
+                          <div className="divider my-2"></div>
+
+                          <div className="flex justify-between">
+                            <div>
+                              <p className="text-sm opacity-60">Applied On</p>
+
+                              <p className="font-semibold">
+                                {new Date(
+                                  selectedApplication.createdAt,
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card bg-base-200 border border-base-300">
+                        <div className="card-body">
+                          <h3 className="card-title">Experience</h3>
+
+                          <div className="space-y-3">
+                            {selectedApplication.applicant.experience.map(
+                              (exp) => (
+                                <div
+                                  key={exp._id}
+                                  className="rounded-xl bg-base-100 border border-base-300 p-4"
+                                >
+                                  <p className="font-bold">{exp.position}</p>
+
+                                  <p className="opacity-70">{exp.company}</p>
+                                </div>
+                              ),
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-6">
-                      <h4 className="font-semibold mb-3">Skills</h4>
+                    <div className="mb-6">
+                      <h3 className="font-semibold text-lg mb-3">Skills</h3>
 
                       <div className="flex flex-wrap gap-2">
                         {selectedApplication.applicant.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="badge badge-primary badge-outline"
+                            className="badge badge-primary badge-md"
                           >
                             {skill}
                           </span>

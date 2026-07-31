@@ -7,7 +7,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ApplicantLayout from "./components/ApplicantLayout";
 import RecruiterLayout from "./components/RecruiterLayout";
 
-
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const JobListing = lazy(() => import("./pages/JobListing"));
@@ -16,8 +15,10 @@ const JobDetails = lazy(() => import("./pages/JobDetails"));
 const ApplicantProfile = lazy(() => import("./pages/ApplicantProfile"));
 const PublishJob = lazy(() => import("./pages/PublishJob"));
 const RecruiterProfile = lazy(() => import("./pages/RecruiterProfile"));
-const AllApplications = lazy(()=>import("./pages/AllApplications"))
-const RecruiterJobs = lazy(()=>import("./pages/RecruiterJobs"))
+const AllApplications = lazy(() => import("./pages/AllApplications"));
+const RecruiterJobs = lazy(() => import("./pages/RecruiterJobs"));
+const EditJob = lazy(() => import("./pages/EditJob"));
+const ArchivedJobs = lazy(() => import("./pages/ArchivedJobs"));
 
 function App() {
   const dispatch = useDispatch();
@@ -108,7 +109,9 @@ function App() {
             <Route path="profile" element={<RecruiterProfile />} />
             <Route path="publish-job" element={<PublishJob />} />
             <Route path="applications" element={<AllApplications />} />
-            <Route path="jobs" element={<RecruiterJobs/>}/>
+            <Route path="jobs" element={<RecruiterJobs />} />
+            <Route path="jobs/:id/edit" element={<EditJob />} />
+            <Route path="archived-jobs" element={<ArchivedJobs />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

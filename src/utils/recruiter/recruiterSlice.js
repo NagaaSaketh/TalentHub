@@ -88,6 +88,52 @@ export const rejectApplicant = createAsyncThunk(
   },
 );
 
+export const updateJob = createAsyncThunk(
+  "recruiter/updateJob",
+  async ({ id, jobData }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/jobs/${id}`, jobData);
+
+      return res.data.job;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to update job",
+      );
+    }
+  },
+);
+
+export const archiveJob = createAsyncThunk(
+  "recruiter/archiveJob",
+  async ({ id, isArchived }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/jobs/${id}/archive`, {
+        isArchived,
+      });
+
+      return res.data.job;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to archive job",
+      );
+    }
+  },
+);
+
+export const fetchArchivedJobs = createAsyncThunk(
+  "recruiter/fetchArchivedJobs",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/archived-jobs`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch archive jobs",
+      );
+    }
+  },
+);
+
 const recruiterSlice = createSlice({
   name: "recruiter",
 
@@ -96,6 +142,7 @@ const recruiterSlice = createSlice({
     stats: {},
     recentApplications: [],
     applications: [],
+    archivedJobs: [],
     status: "idle",
     error: null,
   },
@@ -196,6 +243,55 @@ const recruiterSlice = createSlice({
         }
       })
       .addCase(rejectApplicant.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(updateJob.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(updateJob.fulfilled, (state, action) => {
+        state.status = "success";
+
+        state.jobs = state.jobs.map((job) =>
+          job._id === action.payload._id ? action.payload : job,
+        );
+      })
+
+      .addCase(updateJob.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(archiveJob.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(archiveJob.fulfilled, (state, action) => {
+        state.status = "success";
+
+        state.jobs = state.jobs.map((job) =>
+          job._id === action.payload._id ? action.payload : job,
+        );
+      })
+
+      .addCase(archiveJob.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(fetchArchivedJobs.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
+      .addCase(fetchArchivedJobs.fulfilled, (state, action) => {
+        state.status = "success";
+        state.archivedJobs = action.payload;
+      })
+
+      .addCase(fetchArchivedJobs.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

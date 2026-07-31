@@ -6,6 +6,7 @@ import {
   LogOut,
   UsersRoundIcon,
   FileUser,
+  Archive,
 } from "lucide-react";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
@@ -41,6 +42,11 @@ const RecruiterSidebar = () => {
       name: "My Jobs",
       icon: Briefcase,
       path: "/recruiter/jobs",
+    },
+    {
+      name: "View Archived Jobs",
+      icon: Archive,
+      path: "/recruiter/archived-jobs",
     },
     {
       name: "Profile",

@@ -1,43 +1,18 @@
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  Briefcase,
-  MapPin,
-  IndianRupee,
-  Users,
-  MoreVertical,
-} from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchJobsByRecruiter,
-  updateJob,
-  archiveJob,
-} from "../utils/recruiter/recruiterSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { fetchArchivedJobs,archiveJob } from "../utils/recruiter/recruiterSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
-const RecruiterJobs = () => {
+const ArchivedJobs = () => {
+  const { archivedJobs, status } = useSelector((state) => state.recruiter);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { jobs, status } = useSelector((state) => state.recruiter);
-
   const [selectedJob, setSelectedJob] = useState(null);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  const handleView = (job) => {
-    setSelectedJob({
-      ...job,
-      salary: {
-        min: job.salary.min,
-        max: job.salary.max,
-      },
-    });
+  console.log(archivedJobs);
 
-    document.getElementById("job_modal").showModal();
-  };
-
-  const handleArchive = async () => {
+  const handleRestore = async () => {
     try {
       await dispatch(
         archiveJob({
@@ -46,22 +21,22 @@ const RecruiterJobs = () => {
         }),
       ).unwrap();
 
-      setSuccess("Job archived successfully!");
+      setSuccess("Job restored successfully!");
       setError("");
 
-      document.getElementById("job_modal").close();
+      document.getElementById("archived_job_modal").close();
 
-      dispatch(fetchJobsByRecruiter());
+      dispatch(fetchArchivedJobs());
     } catch (err) {
-      setError(err);
+      setError(err.message || "Failed to restore job.");
       setSuccess("");
     }
   };
 
-  useEffect(() => {
-    dispatch(fetchJobsByRecruiter());
-  }, [dispatch]);
-
+  const handleView = (job) => {
+    setSelectedJob(job);
+    document.getElementById("archived_job_modal").showModal();
+  };
   useEffect(() => {
     if (!success && !error) return;
 
@@ -72,75 +47,92 @@ const RecruiterJobs = () => {
 
     return () => clearTimeout(timer);
   }, [success, error]);
-
+  useEffect(() => {
+    dispatch(fetchArchivedJobs());
+  }, [dispatch]);
   return (
     <>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold">My Jobs</h1>
+          <h1 className="text-4xl font-bold">Archived Jobs</h1>
           <p className="text-base-content/60 mt-1">
-            Manage all the jobs you've posted.
+            Jobs that are no longer accepting applications.
           </p>
         </div>
       </div>
-
-      <ul className="list bg-base-100 rounded-box shadow-xl border border-base-300">
-        <li className="p-6 flex items-center justify-between">
-          <div className="badge badge-primary badge-lg">
-            Total Jobs posted: {jobs.length}
-          </div>
-        </li>
-
-        {status === "loading" && (
-          <li className="flex justify-center py-10">
-            <span className="loading loading-spinner loading-lg"></span>
-          </li>
-        )}
-
-        {jobs.map((job, index) => (
-          <motion.li
-            key={job._id}
-            className="list-row items-center"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <div className="text-3xl font-light opacity-30 w-12">
-              {(index + 1).toString().padStart(2, "0")}
-            </div>
-
-            <div className="avatar placeholder">
-              <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                <span>{job.company.charAt(0)}</span>
-              </div>
-            </div>
-
-            <div className="list-col-grow">
-              <div className="font-bold text-lg">{job.title}</div>
-
-              <div className="text-sm opacity-60">{job.company}</div>
-            </div>
-
+      {status === "loading" ? (
+        <div className="flex justify-center py-10">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : archivedJobs.length === 0 ? (
+        <div className="hero bg-base-200 rounded-box py-16">
+          <div className="hero-content text-center">
             <div>
-              <div
-                className={`badge badge-lg ${
-                  job.isArchived ? "badge-warning" : "badge-success"
-                }`}
-              >
-                {job.isArchived ? "Archived" : "Active"}
-              </div>
+              <h2 className="text-3xl font-bold">No Archived Jobs</h2>
+              <p className="py-3 text-base-content/70">
+                You haven't archived any jobs yet.
+              </p>
             </div>
-            <button
-              className="btn btn-outline btn-primary btn-sm"
-              onClick={() => handleView(job)}
-            >
-              View
-            </button>
-          </motion.li>
-        ))}
-      </ul>
+          </div>
+        </div>
+      ) : (
+        <ul className="list bg-base-100 rounded-box shadow-xl border border-base-300">
+          <li className="p-6 flex items-center justify-between">
+            <div className="badge badge-primary badge-lg">
+              Archived Jobs: {archivedJobs.length}
+            </div>
+          </li>
 
-      <dialog id="job_modal" className="modal">
+          {status === "loading" && (
+            <li className="flex justify-center py-10">
+              <span className="loading loading-spinner loading-lg"></span>
+            </li>
+          )}
+
+          {archivedJobs.map((job, index) => (
+            <motion.li
+              key={job._id}
+              className="list-row items-center"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <div className="text-3xl font-light opacity-30 w-12">
+                {(index + 1).toString().padStart(2, "0")}
+              </div>
+
+              <div className="avatar placeholder">
+                <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
+                  <span>{job.company?.charAt(0)}</span>
+                </div>
+              </div>
+
+              <div className="list-col-grow">
+                <div className="font-bold text-lg">{job.title}</div>
+
+                <div className="text-sm opacity-60">{job.company}</div>
+              </div>
+
+              <div>
+                <div
+                  className={`badge badge-lg ${
+                    job.isArchived ? "badge-warning" : "badge-success"
+                  }`}
+                >
+                  {job.isArchived ? "Archived" : "Active"}
+                </div>
+              </div>
+              <button
+                className="btn btn-outline btn-primary btn-sm"
+                onClick={() => handleView(job)}
+              >
+                View
+              </button>
+            </motion.li>
+          ))}
+        </ul>
+      )}
+      <dialog id="archived_job_modal" className="modal">
         <div className="modal-box max-w-4xl">
           {selectedJob && (
             <>
@@ -216,21 +208,9 @@ const RecruiterJobs = () => {
                   <button className="btn">Close</button>
                 </form>
 
-                <div className="flex gap-3">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      document.getElementById("job_modal").close();
-                      navigate(`/recruiter/jobs/${selectedJob._id}/edit`);
-                    }}
-                  >
-                    Edit Job
-                  </button>
-
-                  <button className="btn btn-warning" onClick={handleArchive}>
-                    Archive Job
-                  </button>
-                </div>
+                <button className="btn btn-success" onClick={handleRestore}>
+                  Restore Job
+                </button>
               </div>
             </>
           )}
@@ -268,4 +248,4 @@ const RecruiterJobs = () => {
   );
 };
 
-export default RecruiterJobs;
+export default ArchivedJobs;
