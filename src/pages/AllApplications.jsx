@@ -7,6 +7,9 @@ import {
 } from "../utils/recruiter/recruiterSlice";
 import { MoreVertical } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import api from "../api/axios";
 
 const AllApplications = () => {
   const dispatch = useDispatch();
@@ -14,6 +17,9 @@ const AllApplications = () => {
   const isWithdrawn = selectedApplication?.status === "Withdrawn";
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { applications, status } = useSelector((state) => state.recruiter);
 
   const handleShortlist = async () => {
@@ -48,6 +54,47 @@ const AllApplications = () => {
     }
   };
 
+  const handleAskAI = async () => {
+    if (!prompt.trim()) return;
+
+    const question = prompt;
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: question,
+      },
+    ]);
+
+    setPrompt("");
+    setLoading(true);
+
+    try {
+      const res = await api.post("/ai/recruiter/chat", {
+        prompt: question,
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: res.data.answer,
+        },
+      ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: err.response?.data?.message || "AI is unavailable.",
+        },
+      ]);
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
     dispatch(fetchRecruiterApplications());
   }, [dispatch]);
@@ -68,9 +115,19 @@ const AllApplications = () => {
       <li className="p-5 flex justify-between items-center">
         <h2 className="text-2xl font-bold">All Applications</h2>
 
-        <span className="badge badge-info badge-soft badge-lg">
-          Total Applications: {applications.length}
-        </span>
+        <div className="flex items-center gap-3">
+          <div className="badge badge-info badge-lg">
+            Total Applications: {applications.length}
+          </div>
+          <div className="aura aura-gold">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => document.getElementById("ai_modal").showModal()}
+            >
+              ✨ AI Assistant
+            </button>
+          </div>
+        </div>
       </li>
       <li className="hidden lg:grid grid-cols-6 gap-6 px-8 py-4 text-sm font-semibold text-base-content/60 border-t border-b bg-base-200">
         <span>Applicant</span>
@@ -335,6 +392,69 @@ const AllApplications = () => {
               </div>
             </dialog>
           </div>
+          <dialog id="ai_modal" className="modal">
+            <div className="modal-box max-w-3xl h-[75vh] flex flex-col">
+              <h3 className="font-bold text-2xl mb-4">
+                ✨ AI Hiring Assistant
+              </h3>
+
+              <div className="flex-1 overflow-y-auto space-y-4">
+                {messages.length === 0 && (
+                  <div className="space-y-3">
+                    <p className="opacity-70">
+                      Ask me anything about your applicants.
+                    </p>
+
+                    <div className="bg-base-200 rounded-xl p-4 space-y-2">
+                      <p>Suggest the top 3 candidates.</p>
+                      <p>Summarize all applicants.</p>
+                      <p>Who should I interview first?</p>
+                      <p>Which applicant has the strongest frontend profile?</p>
+                    </div>
+                  </div>
+                )}
+
+                {messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`chat ${msg.role === "user" ? "chat-end" : "chat-start"}`}
+                  >
+                    <div className="chat-bubble prose prose-sm max-w-none">
+                      {msg.role === "assistant" ? (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {msg.content}
+                        </ReactMarkdown>
+                      ) : (
+                        msg.content
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {loading && (
+                  <span className="loading loading-dots loading-md"></span>
+                )}
+              </div>
+
+              <div className="mt-5 flex gap-2">
+                <input
+                  className="input input-bordered flex-1"
+                  placeholder="Ask about your applicants..."
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAskAI()}
+                />
+
+                <button className="btn btn-primary" onClick={handleAskAI}>
+                  Send
+                </button>
+              </div>
+            </div>
+
+            <form method="dialog" className="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
           <AnimatePresence>
             {success && (
               <div className="toast toast-top toast-center z-50">
