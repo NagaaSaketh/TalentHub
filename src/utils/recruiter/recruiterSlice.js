@@ -31,14 +31,58 @@ export const fetchDashboard = createAsyncThunk(
 );
 
 export const fetchJobsByRecruiter = createAsyncThunk(
-  "recruiter/fetchJobs",
+  "recruiter/jobs",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/jobs");
+      const res = await api.get("/recruiter-jobs");
       return res.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to get jobs",
+        err.response?.data?.message || "Failed to fetch recruiter jobs",
+      );
+    }
+  },
+);
+
+export const fetchRecruiterApplications = createAsyncThunk(
+  "recruiter/applications",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/job-applications");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch applications",
+      );
+    }
+  },
+);
+
+export const shortlistApplicant = createAsyncThunk(
+  "recruiter/shortlistApplicant",
+  async (applicationId, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/applications/${applicationId}/shortlist`);
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to shortlist applicant",
+      );
+    }
+  },
+);
+
+export const rejectApplicant = createAsyncThunk(
+  "recruiter/rejectApplicant",
+  async (applicationId, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/applications/${applicationId}/reject`);
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to reject applicant",
       );
     }
   },
@@ -51,6 +95,7 @@ const recruiterSlice = createSlice({
     jobs: [],
     stats: {},
     recentApplications: [],
+    applications: [],
     status: "idle",
     error: null,
   },
@@ -74,12 +119,13 @@ const recruiterSlice = createSlice({
 
       .addCase(fetchJobsByRecruiter.pending, (state) => {
         state.status = "loading";
-        state.error = null;
       })
+
       .addCase(fetchJobsByRecruiter.fulfilled, (state, action) => {
         state.status = "success";
         state.jobs = action.payload;
       })
+
       .addCase(fetchJobsByRecruiter.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
@@ -97,6 +143,59 @@ const recruiterSlice = createSlice({
       })
 
       .addCase(fetchDashboard.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(fetchRecruiterApplications.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
+      .addCase(fetchRecruiterApplications.fulfilled, (state, action) => {
+        state.applications = action.payload;
+      })
+
+      .addCase(fetchRecruiterApplications.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(shortlistApplicant.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
+      .addCase(shortlistApplicant.fulfilled, (state, action) => {
+        const index = state.applications.findIndex(
+          (app) => app._id === action.payload.application._id,
+        );
+
+        if (index !== -1) {
+          state.applications[index].status = action.payload.application.status;
+        }
+      })
+
+      .addCase(shortlistApplicant.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(rejectApplicant.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
+      .addCase(rejectApplicant.fulfilled, (state, action) => {
+        const index = state.applications.findIndex(
+          (app) => app._id === action.payload.application._id,
+        );
+
+        if (index !== -1) {
+          state.applications[index] = action.payload.application;
+        }
+      })
+      .addCase(rejectApplicant.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

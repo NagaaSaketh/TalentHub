@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
-import { Briefcase, Users, Archive, UserCheck, TrendingUp } from "lucide-react";
+import {
+  Briefcase,
+  Users,
+  Archive,
+  UserCheck,
+  TrendingUp,
+  EllipsisVertical,
+} from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboard } from "../utils/recruiter/recruiterSlice";
+import { Link } from "react-router-dom";
 
 const RecruiterDashboard = () => {
   const dispatch = useDispatch();
@@ -26,7 +34,7 @@ const RecruiterDashboard = () => {
         initial={{ y: -25, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
-        <h1 className="text-3xl font-bold">Recruiter Dashboard</h1>
+        <h1 className="text-4xl font-bold">Recruiter Dashboard</h1>
 
         <p className="text-base-content/60 mt-2">
           Manage jobs, monitor applications and hire top talent.
@@ -100,14 +108,9 @@ const RecruiterDashboard = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">Recent Applications</h2>
 
-            <button
-              className="btn btn-link"
-              onClick={() =>
-                document.getElementById("applications_modal").showModal()
-              }
-            >
-              View all
-            </button>
+            <Link to="/recruiter/applications" className="btn btn-link">
+              View All
+            </Link>
           </div>
 
           <div className="overflow-x-auto mt-6">
@@ -118,7 +121,7 @@ const RecruiterDashboard = () => {
                   <th>Job</th>
                   <th>Applied</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -189,7 +192,7 @@ const RecruiterDashboard = () => {
                           role="button"
                           className="btn btn-ghost btn-sm"
                         >
-                          ⋮
+                          <EllipsisVertical size={20}/>
                         </div>
 
                         <ul
@@ -211,74 +214,7 @@ const RecruiterDashboard = () => {
             </table>
           </div>
         </div>
-        <dialog id="applications_modal" className="modal">
-          <div className="modal-box max-w-4xl">
-            <h3 className="font-bold text-2xl mb-6">All Applications</h3>
-
-            <ul className="list bg-base-100 rounded-box">
-              <li className="p-4 pb-2 text-sm opacity-60 tracking-wide">
-                Total Applications ({recentApplications.length})
-              </li>
-
-              {recentApplications.map((app) => (
-                <li
-                  key={app._id}
-                  className="list-row flex items-center justify-between"
-                >
-                  <div className="avatar placeholder">
-                    <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                      <span className="font-bold">
-                        {app.applicant?.user?.fullname?.charAt(0)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex-1 ml-4">
-                    <div className="font-semibold">
-                      {app.applicant?.user?.fullname}
-                    </div>
-
-                    <div className="text-xs opacity-60">{app.job?.title}</div>
-                  </div>
-
-                  <div className="text-sm">
-                    {new Date(app.createdAt).toLocaleDateString()}
-                  </div>
-
-                  <div>
-                    {app.status === "Applied" && (
-                      <div className="badge badge-info">Applied</div>
-                    )}
-
-                    {app.status === "Shortlisted" && (
-                      <div className="badge badge-success">Shortlisted</div>
-                    )}
-
-                    {app.status === "Rejected" && (
-                      <div className="badge badge-error">Rejected</div>
-                    )}
-
-                    {app.status === "Withdrawn" && (
-                      <div className="badge badge-neutral">Withdrawn</div>
-                    )}
-                  </div>
-
-                  <button className="btn btn-sm btn-primary">View</button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="modal-action">
-              <form method="dialog">
-                <button className="btn">Close</button>
-              </form>
-            </div>
-          </div>
-
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+      
       </motion.div>
     </motion.div>
   );

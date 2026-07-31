@@ -24,7 +24,13 @@ const EXPERIENCE_OPTIONS = [
   { label: "1 Year", value: 1 },
   { label: "2 Years", value: 2 },
   { label: "3 Years", value: 3 },
-  { label: "5+ Years", value: 5 },
+  { label: "4 Years", value: 4 },
+  { label: "5 Years", value: 5 },
+  { label: "6 Years", value: 6 },
+  { label: "7 Years", value: 7 },
+  { label: "8 Years", value: 8 },
+  { label: "9 Years", value: 9 },
+  { label: "10 Years", value: 10 },
 ];
 
 const Register = () => {
@@ -44,7 +50,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    experience: "",
+    totalExperience:"",
     location: "",
     skills: "",
     companyName: "",
@@ -118,8 +124,8 @@ const Register = () => {
     payload.append("role", role);
 
     if (role === "applicant") {
-      if (formData.experience)
-        payload.append("experience", formData.experience);
+      if (formData.totalExperience)
+        payload.append("totalExperience", formData.totalExperience);
 
       if (formData.location) payload.append("location", formData.location);
 
@@ -426,7 +432,7 @@ const Register = () => {
                     <select
                       name="experience"
                       className="select w-full"
-                      value={formData.experience}
+                      value={formData.totalExperience}
                       onChange={handleChange}
                     >
                       <option value="" disabled>
