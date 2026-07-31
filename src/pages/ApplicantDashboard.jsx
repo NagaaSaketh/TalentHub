@@ -163,7 +163,8 @@ const ApplicantDashboard = () => {
             </div>
 
             <div className="space-y-5">
-              {recommendedJobs.map((job) => (
+            
+              {recommendedJobs.length > 0  ? recommendedJobs.map((job) => (
                 <div
                   key={job._id}
                   className="flex items-center justify-between border-b border-base-300 pb-4"
@@ -200,7 +201,7 @@ const ApplicantDashboard = () => {
                     </Link>
                   </div>
                 </div>
-              ))}
+              )) : <h2 className="text-xl font-medium flex justify-center items-center min-h-screen">No recommendation found!</h2> }
             </div>
           </div>
         </motion.div>

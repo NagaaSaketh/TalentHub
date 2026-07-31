@@ -111,7 +111,7 @@ const NavBar = ({ showSearch = true }) => {
 
               {user?.role === "applicant" && (
                 <li>
-                  <Link to="/applicant/bookmarks">My Job Bookmarks</Link>
+                  <Link to="/applicant/jobs">View My Applications</Link>
                 </li>
               )}
 
