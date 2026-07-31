@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import register from "../assets/register.png";
+import register from "../../assets/register.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";

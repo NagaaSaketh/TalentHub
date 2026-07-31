@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updateRecruiterProfile,
   uploadCompanyLogo,
-} from "../utils/recruiter/recruiterSlice";
+} from "../../utils/recruiter/recruiterSlice";
 import { motion, AnimatePresence } from "framer-motion";
-import { updateProfile } from "../utils/auth/authSlice";
+import { updateProfile } from "../../utils/auth/authSlice";
 
 const RecruiterProfile = () => {
   const { user, profile } = useSelector((state) => state.user);
