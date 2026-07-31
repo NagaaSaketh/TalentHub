@@ -2,11 +2,14 @@ import { logoutUser } from "../utils/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRoundIcon } from "lucide-react";
+import { useState } from "react";
+import { setSearch } from "../utils/applicant/applicantSlice";
 
 const NavBar = ({ showSearch = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, profile } = useSelector((state) => state.user);
+  const { search } = useSelector((state) => state.applicant);
 
   const handleLogout = async () => {
     try {
@@ -41,16 +44,20 @@ const NavBar = ({ showSearch = true }) => {
               </svg>
 
               <input
-                type="search"
+                type="text"
+                className="input input-bordered w-full"
                 placeholder="Search jobs, companies..."
-                className="grow"
+                value={search}
+                onChange={(e) => dispatch(setSearch(e.target.value))}
               />
             </label>
           </div>
         )}
 
         <div className="flex-1 flex justify-end items-center gap-2">
-          <h2 className="text-xl font-bold px-2">Welcome back, {user.fullname}</h2>
+          <h2 className="text-xl font-bold px-2">
+            Welcome back, {user.fullname}
+          </h2>
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}

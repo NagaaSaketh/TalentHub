@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import NotFound from "./NotFound";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -87,10 +88,9 @@ const JobDetails = () => {
     }
   };
 
-  console.log(selectedJob);
-  //   console.log(recruiterProfile);
-  //   console.log(similarJobs);
-  //   console.log(applicantsCount);
+  if (status === "failed") {
+    return <NotFound />;
+  }
 
   const postedAgo = (createdAt) => {
     const difference = new Date() - new Date(createdAt);

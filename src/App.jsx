@@ -21,6 +21,8 @@ const EditJob = lazy(() => import("./pages/EditJob"));
 const ArchivedJobs = lazy(() => import("./pages/ArchivedJobs"));
 const ApplicantDashboard = lazy(() => import("./pages/ApplicantDashboard"));
 const ApplicantJobs = lazy(() => import("./pages/ApplicantJobs"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   const dispatch = useDispatch();
@@ -58,6 +60,19 @@ function App() {
                 />
               ) : (
                 <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              user ? (
+                <Navigate
+                  to={user.role === "recruiter" ? "/recruiter" : "/applicant"}
+                  replace
+                />
+              ) : (
+                <ForgotPassword />
               )
             }
           />
@@ -117,7 +132,10 @@ function App() {
             <Route path="jobs/:id/edit" element={<EditJob />} />
             <Route path="archived-jobs" element={<ArchivedJobs />} />
           </Route>
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route
+            path="*"
+            element={user ? <NotFound /> : <Navigate to="/login" replace />}
+          />
         </Routes>
       </Suspense>
     </>

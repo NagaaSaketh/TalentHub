@@ -57,6 +57,25 @@ export const logoutUser = createAsyncThunk(
   },
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async ({ email, password, confirmPassword }, { rejectWithValue }) => {
+    try {
+      const res = await api.put("/forgot-password", {
+        email,
+        password,
+        confirmPassword,
+      });
+
+      return res.data.message;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to reset password!",
+      );
+    }
+  },
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -112,6 +131,19 @@ const authSlice = createSlice({
         state.error = null;
       })
 
+      .addCase(forgotPassword.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.status = "success";
+        state.error = null;
+      })
+
+      .addCase(forgotPassword.rejected, (state, action) => {
+        ((state.status = "failed"), (state.error = action.payload));
+      })
+
       .addMatcher(
         (action) =>
           action.type.startsWith("auth/") && action.type.endsWith("/pending"),
@@ -133,5 +165,5 @@ const authSlice = createSlice({
       );
   },
 });
-export const { clearError , updateProfile } = authSlice.actions;
+export const { clearError, updateProfile } = authSlice.actions;
 export default authSlice.reducer;

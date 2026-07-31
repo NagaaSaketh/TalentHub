@@ -3,9 +3,16 @@ import api from "../../api/axios";
 
 export const fetchAllJobs = createAsyncThunk(
   "jobs/fetchAllJobs",
-  async (_, { rejectWithValue }) => {
+  async ({ filters = "", search = "" }, { rejectWithValue }) => {
     try {
-      const res = await api.get("/jobs");
+      let query = filters;
+
+      if (search.trim()) {
+        query += `${query ? "&" : ""}search=${encodeURIComponent(search)}`;
+      }
+
+      const res = await api.get(`/jobs?${query}`);
+
       return res.data;
     } catch (err) {
       return rejectWithValue(
@@ -142,6 +149,7 @@ const applicantsSlice = createSlice({
     selectedJob: null,
     hasApplied: false,
     stats: {},
+    search: "",
     recentActivity: [],
     recommendedJobs: [],
     applications: [],
@@ -150,10 +158,14 @@ const applicantsSlice = createSlice({
     recruiterProfile: null,
     similarJobs: [],
     applicantsCount: 0,
-    status: "loading",
+    status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setSearch(state, action) {
+      state.search = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllJobs.pending, (state) => {
@@ -161,13 +173,14 @@ const applicantsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllJobs.fulfilled, (state, action) => {
-        ((state.status = "success"),
-          (state.jobs = action.payload),
-          (state.error = null));
-      })
-      .addCase(fetchAllJobs.rejected, (state) => {
-        ((state.status = "failed"), (state.jobs = []));
+        state.status = "success";
+        state.jobs = action.payload;
         state.error = null;
+      })
+      .addCase(fetchAllJobs.rejected, (state, action) => {
+        state.status = "failed";
+        state.jobs = [];
+        state.error = action.payload;
       })
 
       .addCase(fetchJobDetails.pending, (state) => {
@@ -224,5 +237,5 @@ const applicantsSlice = createSlice({
       });
   },
 });
-
+export const { setSearch } = applicantsSlice.actions;
 export default applicantsSlice.reducer;

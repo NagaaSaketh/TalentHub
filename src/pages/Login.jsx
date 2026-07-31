@@ -114,11 +114,7 @@ const Login = () => {
               </button>
             </fieldset>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="label cursor-pointer gap-2">
-                <input type="checkbox" className="checkbox checkbox-sm" />
-                <span className="label-text">Remember me</span>
-              </label>
+            <div className="flex items-center justify-end text-xs">
               <Link
                 to="/forgot-password"
                 className="link link-primary font-medium"
