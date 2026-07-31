@@ -121,7 +121,7 @@ const RecruiterDashboard = () => {
                   <th>Job</th>
                   <th>Applied</th>
                   <th>Status</th>
-                  <th>Action</th>
+
                 </tr>
               </thead>
 
@@ -185,29 +185,7 @@ const RecruiterDashboard = () => {
                       )}
                     </td>
 
-                    <td>
-                      <div className="dropdown dropdown-end">
-                        <div
-                          tabIndex={0}
-                          role="button"
-                          className="btn btn-ghost btn-sm"
-                        >
-                          <EllipsisVertical size={20}/>
-                        </div>
-
-                        <ul
-                          tabIndex={0}
-                          className="dropdown-content menu bg-base-100 rounded-box shadow-lg border w-48 z-50"
-                        >
-                          <li>
-                            <a>View Profile</a>
-                          </li>
-                          <li>
-                            <a className="text-error">Reject</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
+                    
                   </motion.tr>
                 ))}
               </tbody>

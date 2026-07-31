@@ -68,6 +68,19 @@ export const bookMarkJob = createAsyncThunk(
     }
   },
 );
+export const fetchApplicantDashboard = createAsyncThunk(
+  "applicant/dashboard",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/applicant-dashboard");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch dashboard",
+      );
+    }
+  },
+);
 
 const jobSlice = createSlice({
   name: "jobs",
@@ -75,6 +88,11 @@ const jobSlice = createSlice({
     jobs: [],
     selectedJob: null,
     hasApplied: false,
+    stats: {},
+    recentActivity: [],
+    recommendedJobs: [],
+    applications: [],
+    bookmarks: [],
     hasBookmarked: false,
     recruiterProfile: null,
     similarJobs: [],
@@ -116,6 +134,23 @@ const jobSlice = createSlice({
       })
 
       .addCase(fetchJobDetails.rejected, (state, action) => {
+        ((state.status = "failed"), (state.jobs = []));
+        state.error = action.payload;
+      })
+
+      .addCase(fetchApplicantDashboard.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
+      .addCase(fetchApplicantDashboard.fulfilled, (state, action) => {
+        state.status = "success";
+        state.stats = action.payload.stats;
+        state.recentActivity = action.payload.recentActivity;
+        state.recommendedJobs = action.payload.recommendedJobs;
+      })
+
+      .addCase(fetchApplicantDashboard.rejected, (state, action) => {
         ((state.status = "failed"), (state.jobs = []));
         state.error = action.payload;
       });

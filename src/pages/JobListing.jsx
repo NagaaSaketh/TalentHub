@@ -5,7 +5,7 @@ import { Menu, IndianRupee, MapPin, Briefcase, Bookmark } from "lucide-react";
 import { motion } from "framer-motion";
 
 import FilterBar from "../components/FilterBar";
-import { fetchAllJobs } from "../utils/jobs/jobSlice";
+import { fetchAllJobs } from "../utils/applicant/applicantSlice";
 
 const containerVariants = {
   hidden: {},
@@ -34,7 +34,7 @@ const cardVariants = {
 const JobListing = () => {
   const dispatch = useDispatch();
 
-  const { jobs } = useSelector((state) => state.jobs);
+  const { jobs } = useSelector((state) => state.applicant);
 
   useEffect(() => {
     dispatch(fetchAllJobs());

@@ -5,7 +5,7 @@ import {
   bookMarkJob,
   fetchJobDetails,
   withdrawJob,
-} from "../utils/jobs/jobSlice";
+} from "../utils/applicant/applicantSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IndianRupee,
@@ -27,7 +27,7 @@ const JobDetails = () => {
     applicantsCount,
     hasApplied,
     hasBookmarked,
-  } = useSelector((state) => state.jobs);
+  } = useSelector((state) => state.applicant);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("details");
   const [success, setSuccess] = useState("");

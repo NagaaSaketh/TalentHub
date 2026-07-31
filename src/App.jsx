@@ -19,6 +19,7 @@ const AllApplications = lazy(() => import("./pages/AllApplications"));
 const RecruiterJobs = lazy(() => import("./pages/RecruiterJobs"));
 const EditJob = lazy(() => import("./pages/EditJob"));
 const ArchivedJobs = lazy(() => import("./pages/ArchivedJobs"));
+const ApplicantDashboard = lazy(()=>import("./pages/ApplicantDashboard"))
 
 function App() {
   const dispatch = useDispatch();
@@ -94,6 +95,7 @@ function App() {
             }
           >
             <Route index element={<JobListing />} />
+            <Route path="dashboard" element={<ApplicantDashboard/>} />
             <Route path="profile" element={<ApplicantProfile />} />
             <Route path="job/:id" element={<JobDetails />} />
           </Route>

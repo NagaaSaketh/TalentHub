@@ -97,7 +97,7 @@ const NavBar = ({ showSearch = true }) => {
 
               <li>
                 <Link
-                  to={user?.role === "recruiter" ? "/recruiter" : "/applicant"}
+                  to={user?.role === "recruiter" ? "/recruiter" : "/applicant/dashboard"}
                 >
                   Dashboard
                 </Link>
