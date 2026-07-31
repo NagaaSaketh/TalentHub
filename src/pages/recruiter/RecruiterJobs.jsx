@@ -226,10 +226,11 @@ const RecruiterJobs = () => {
                   >
                     Edit Job
                   </button>
-
-                  <button className="btn btn-warning" onClick={handleArchive}>
-                    Archive Job
-                  </button>
+                  {!selectedJob.isArchived && (
+                    <button className="btn btn-warning" onClick={handleArchive}>
+                      Archive Job
+                    </button>
+                  )}
                 </div>
               </div>
             </>
