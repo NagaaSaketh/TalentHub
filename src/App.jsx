@@ -4,24 +4,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, lazy, Suspense } from "react";
 import { fetchCurrentUser } from "./utils/auth/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
-import ApplicantLayout from "./components/ApplicantLayout";
-import RecruiterLayout from "./components/RecruiterLayout";
+import ApplicantLayout from "./components/applicant/ApplicantLayout";
+import RecruiterLayout from "./components/recruiter/RecruiterLayout";
 
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
-const JobListing = lazy(() => import("./pages/JobListing"));
-const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
-const JobDetails = lazy(() => import("./pages/JobDetails"));
-const ApplicantProfile = lazy(() => import("./pages/ApplicantProfile"));
-const PublishJob = lazy(() => import("./pages/PublishJob"));
-const RecruiterProfile = lazy(() => import("./pages/RecruiterProfile"));
-const AllApplications = lazy(() => import("./pages/AllApplications"));
-const RecruiterJobs = lazy(() => import("./pages/RecruiterJobs"));
-const EditJob = lazy(() => import("./pages/EditJob"));
-const ArchivedJobs = lazy(() => import("./pages/ArchivedJobs"));
-const ApplicantDashboard = lazy(() => import("./pages/ApplicantDashboard"));
-const ApplicantJobs = lazy(() => import("./pages/ApplicantJobs"));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const JobListing = lazy(() => import("./pages/applicant/JobListing"));
+const RecruiterDashboard = lazy(() => import("./pages/recruiter/RecruiterDashboard"));
+const JobDetails = lazy(() => import("./pages/applicant/JobDetails"));
+const ApplicantProfile = lazy(() => import("./pages/applicant/ApplicantProfile"));
+const PublishJob = lazy(() => import("./pages/recruiter/PublishJob"));
+const RecruiterProfile = lazy(() => import("./pages/recruiter/RecruiterProfile"));
+const AllApplications = lazy(() => import("./pages/recruiter/AllApplications"));
+const RecruiterJobs = lazy(() => import("./pages/recruiter/RecruiterJobs"));
+const EditJob = lazy(() => import("./pages/recruiter/EditJob"));
+const ArchivedJobs = lazy(() => import("./pages/recruiter/ArchivedJobs"));
+const ApplicantDashboard = lazy(() => import("./pages/applicant/ApplicantDashboard"));
+const ApplicantJobs = lazy(() => import("./pages/applicant/ApplicantJobs"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
@@ -103,7 +103,7 @@ function App() {
             }
           />
           <Route
-            path="/applicant/"
+            path="/applicant"
             element={
               <ProtectedRoute allowedRoles={["applicant"]}>
                 <ApplicantLayout />

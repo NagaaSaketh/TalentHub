@@ -11,7 +11,7 @@ import {
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../utils/auth/authSlice";
+import { logoutUser } from "../../utils/auth/authSlice";
 
 const RecruiterSidebar = () => {
   const dispatch = useDispatch();

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Menu, IndianRupee, MapPin, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
 
-import FilterBar from "../components/FilterBar";
-import { fetchAllJobs } from "../utils/applicant/applicantSlice";
+import FilterBar from "../../components/applicant/FilterBar";
+import { fetchAllJobs } from "../../utils/applicant/applicantSlice";
 
 const containerVariants = {
   hidden: {},

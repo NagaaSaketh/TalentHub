@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboard } from "../utils/recruiter/recruiterSlice";
+import { fetchDashboard } from "../../utils/recruiter/recruiterSlice";
 import { Link } from "react-router-dom";
 
 const RecruiterDashboard = () => {

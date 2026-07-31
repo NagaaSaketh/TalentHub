@@ -5,9 +5,9 @@ import {
   updateApplicantProfile,
   uploadApplicantPhoto,
   uploadResume,
-} from "../utils/applicant/applicantSlice";
+} from "../../utils/applicant/applicantSlice";
 
-import { updateProfile } from "../utils/auth/authSlice";
+import { updateProfile } from "../../utils/auth/authSlice";
 
 import { motion, AnimatePresence } from "framer-motion";
 

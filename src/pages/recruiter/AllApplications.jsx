@@ -4,12 +4,12 @@ import {
   fetchRecruiterApplications,
   shortlistApplicant,
   rejectApplicant,
-} from "../utils/recruiter/recruiterSlice";
+} from "../../utils/recruiter/recruiterSlice";
 import { MoreVertical } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import api from "../api/axios";
+import api from "../../api/axios";
 
 const AllApplications = () => {
   const dispatch = useDispatch();

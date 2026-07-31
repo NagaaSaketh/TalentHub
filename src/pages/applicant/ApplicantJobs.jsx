@@ -6,8 +6,8 @@ import {
   fetchApplications,
   withdrawJob,
   applyJob,
-} from "../utils/applicant/applicantSlice";
-import api from "../api/axios";
+} from "../../utils/applicant/applicantSlice";
+import api from "../../api/axios";
 
 const ApplicantJobs = () => {
   const dispatch = useDispatch();
@@ -216,25 +216,28 @@ const ApplicantJobs = () => {
                                 View Application Details
                               </button>
                             </li>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  handlePrepareInterview(application.job._id)
-                                }
-                                className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <Sparkles className="w-4 h-4 text-violet-600" />
-                                  <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
-                                    Interview Coach
-                                  </span>
-                                </div>
+                            {(application.status === "Applied" ||
+                              application.status === "Shortlisted") && (
+                              <li>
+                                <button
+                                  onClick={() =>
+                                    handlePrepareInterview(application.job._id)
+                                  }
+                                  className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4 text-violet-600" />
+                                    <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
+                                      Interview Coach
+                                    </span>
+                                  </div>
 
-                                <span className="badge badge-secondary badge-xs animate-pulse">
-                                  AI
-                                </span>
-                              </button>
-                            </li>
+                                  <span className="badge badge-secondary badge-xs animate-pulse">
+                                    AI
+                                  </span>
+                                </button>
+                              </li>
+                            )}
                           </ul>
                         </div>
                       </td>

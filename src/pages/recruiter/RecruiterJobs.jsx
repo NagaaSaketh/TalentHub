@@ -11,7 +11,7 @@ import {
   fetchJobsByRecruiter,
   updateJob,
   archiveJob,
-} from "../utils/recruiter/recruiterSlice";
+} from "../../utils/recruiter/recruiterSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 

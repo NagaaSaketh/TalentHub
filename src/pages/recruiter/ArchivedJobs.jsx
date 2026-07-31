@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchArchivedJobs,archiveJob } from "../utils/recruiter/recruiterSlice";
+import { fetchArchivedJobs,archiveJob } from "../../utils/recruiter/recruiterSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ArchivedJobs = () => {

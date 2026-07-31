@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { UsersRoundIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { forgotPassword } from "../utils/auth/authSlice";
+import { forgotPassword } from "../../utils/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {

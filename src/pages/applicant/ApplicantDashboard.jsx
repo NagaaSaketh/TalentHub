@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FileUser, CheckCircle, XCircle, Bookmark } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchApplicantDashboard } from "../utils/applicant/applicantSlice";
+import { fetchApplicantDashboard } from "../../utils/applicant/applicantSlice";
 const ApplicantDashboard = () => {
   const dispatch = useDispatch();
   const { stats, recentActivity, recommendedJobs } = useSelector(

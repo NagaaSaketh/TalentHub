@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState , useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch,useSelector } from "react-redux";
-import {
-  updateJob,
-  fetchJobsByRecruiter,
-} from "../utils/recruiter/recruiterSlice";
-import { useNavigate, useParams } from "react-router-dom";
-const EditJob = () => {
+import { useDispatch } from "react-redux";
+import { createJobs } from "../../utils/recruiter/recruiterSlice";
+const PublishJob = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const { jobs } = useSelector((state) => state.recruiter);
   const initialJobData = {
     title: "",
     company: "",
@@ -30,8 +23,24 @@ const EditJob = () => {
   const [jobData, setJobData] = useState(initialJobData);
   const [skillInput, setSkillInput] = useState("");
   const [responsibilityInput, setResponsibilityInput] = useState("");
-  const [success, setSuccess] = useState("");
+  const [success, setSucess] = useState("");
   const [error, setError] = useState("");
+
+  const saveDraft = () => {
+    localStorage.setItem(
+      "jobDraft",
+      JSON.stringify({
+        ...jobData,
+        skillInput,
+        responsibilityInput,
+      }),
+    );
+
+    setSucess("Draft saved successfully!");
+    setError("");
+
+    setTimeout(() => setSucess(""), 3000);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -112,12 +121,16 @@ const EditJob = () => {
     };
 
     try {
-      const res = await dispatch(updateJob({ id, jobData: payload })).unwrap();
-      await dispatch(fetchJobsByRecruiter());
-      setSuccess(res.message || "Job updated successfully!");
+      const res = await dispatch(createJobs(payload)).unwrap();
+      setSucess(res.message || "Job published successfully!");
       setError("");
 
-      setTimeout(() => navigate("/recruiter/jobs"), 1500);
+      setTimeout(() => setSucess(""), 3000);
+      localStorage.removeItem("jobDraft");
+
+      setJobData(initialJobData);
+      setSkillInput("");
+      setResponsibilityInput("");
     } catch (err) {
       setError(err);
       setSuccess("");
@@ -127,31 +140,32 @@ const EditJob = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchJobsByRecruiter());
-  }, [dispatch]);
+    const draft = localStorage.getItem("jobDraft");
 
-  useEffect(() => {
-    const job = jobs.find((j) => j._id === id);
+    if (draft) {
+      const parsed = JSON.parse(draft);
 
-    if (!job) return;
+      setJobData({
+        title: parsed.title || "",
+        company: parsed.company || "",
+        jobType: parsed.jobType || "",
+        salary: parsed.salary || {
+          min: "",
+          max: "",
+        },
+        skills: parsed.skills || [],
+        description: parsed.description || "",
+        responsibilities: parsed.responsibilities || [],
+        requiredExp: parsed.requiredExp || "",
+        deadline: parsed.deadline || "",
+        location: parsed.location || "",
+        isRemote: parsed.isRemote || false,
+      });
 
-    setJobData({
-      ...job,
-      deadline: job.deadline?.split("T")[0],
-      salary: {
-        min: job.salary.min,
-        max: job.salary.max,
-      },
-    });
-  }, [jobs, id]);
-
-  if (!jobData._id) {
-    return (
-      <div className="flex justify-center py-20">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
+      setSkillInput(parsed.skillInput || "");
+      setResponsibilityInput(parsed.responsibilityInput || "");
+    }
+  }, []);
 
   return (
     <motion.div
@@ -170,11 +184,11 @@ const EditJob = () => {
                   animate={{ opacity: 1 }}
                   className="text-3xl font-bold"
                 >
-                  Edit Job
+                  Create New Job
                 </motion.h1>
 
                 <p className="text-base-content/60 mt-2">
-                  Update the information for this job posting.
+                  Fill in the information below to publish a new job opening.
                 </p>
               </div>
 
@@ -487,10 +501,19 @@ const EditJob = () => {
               <div className="sticky bg-base-100  mt-10 py-5 flex justify-end gap-4">
                 <motion.button
                   whileTap={{ scale: 0.95 }}
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={saveDraft}
+                >
+                  Save Draft
+                </motion.button>
+
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   type="submit"
                   className="btn btn-primary"
                 >
-                  Save Changes
+                  Publish Job
                 </motion.button>
               </div>
             </div>
@@ -529,4 +552,4 @@ const EditJob = () => {
   );
 };
 
-export default EditJob;
+export default PublishJob;

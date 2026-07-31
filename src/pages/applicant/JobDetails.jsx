@@ -5,7 +5,7 @@ import {
   bookMarkJob,
   fetchJobDetails,
   withdrawJob,
-} from "../utils/applicant/applicantSlice";
+} from "../../utils/applicant/applicantSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IndianRupee,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import NotFound from "./NotFound";
+import NotFound from "../NotFound";
 
 const JobDetails = () => {
   const { id } = useParams();

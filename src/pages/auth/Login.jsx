@@ -4,8 +4,8 @@ import { useLocation } from "react-router-dom";
 import { EyeOff, Eye, UsersRoundIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { loginUser, clearError } from "../utils/auth/authSlice";
-import loginImg from "../assets/loginpage.jpg";
+import { loginUser, clearError } from "../../utils/auth/authSlice";
+import loginImg from "../../assets/loginpage.jpg";
 
 const Login = () => {
   const dispatch = useDispatch();

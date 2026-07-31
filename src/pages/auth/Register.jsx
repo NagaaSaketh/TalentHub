@@ -17,7 +17,7 @@ import {
   UsersRoundIcon,
   Globe,
 } from "lucide-react";
-import { registerUser } from "../utils/auth/authSlice";
+import { registerUser } from "../../utils/auth/authSlice";
 
 const EXPERIENCE_OPTIONS = [
   { label: "Fresher", value: 0 },

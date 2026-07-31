@@ -1,9 +1,9 @@
-import { logoutUser } from "../utils/auth/authSlice";
+import { logoutUser } from "../../utils/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRoundIcon } from "lucide-react";
 import { useState } from "react";
-import { setSearch } from "../utils/applicant/applicantSlice";
+import { setSearch } from "../../utils/applicant/applicantSlice";
 
 const NavBar = ({ showSearch = true }) => {
   const navigate = useNavigate();
