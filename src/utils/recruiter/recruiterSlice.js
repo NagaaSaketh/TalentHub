@@ -15,6 +15,39 @@ export const createJobs = createAsyncThunk(
     }
   },
 );
+export const updateRecruiterProfile = createAsyncThunk(
+  "recruiter/updateProfile",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/recruiter/profile", data);
+
+      return res.data.recruiter;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to update profile",
+      );
+    }
+  },
+);
+
+export const uploadCompanyLogo = createAsyncThunk(
+  "recruiter/uploadLogo",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/recruiter/profile/logo", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to upload logo",
+      );
+    }
+  },
+);
 
 export const fetchDashboard = createAsyncThunk(
   "recruiter/dashboard",

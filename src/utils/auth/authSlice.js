@@ -6,7 +6,7 @@ export const fetchCurrentUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/me");
-      return res.data.user;
+      return res.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Please login to continue!",
@@ -23,7 +23,7 @@ export const loginUser = createAsyncThunk(
 
       const res = await api.get("/me");
 
-      return res.data.user;
+      return res.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Invalid credentials!",
@@ -36,7 +36,7 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (payload, { rejectWithValue }) => {
     try {
-      const res = await api.post("/register", payload)
+      const res = await api.post("/register", payload);
       return res.data;
     } catch (err) {
       return rejectWithValue(
@@ -61,12 +61,16 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
+    profile: null,
     status: "loading",
     error: null,
   },
   reducers: {
     clearError: (state) => {
       state.error = null;
+    },
+    updateProfile: (state, action) => {
+      state.profile = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -77,18 +81,22 @@ const authSlice = createSlice({
 
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.status = "success";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.profile = action.payload.profile;
         state.error = null;
       })
 
       .addCase(fetchCurrentUser.rejected, (state) => {
-        ((state.status = "failed"), (state.user = null));
+        ((state.status = "failed"),
+          (state.user = null),
+          (state.profile = null));
         state.error = null;
       })
 
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "success";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.profile = action.payload.profile;
         state.error = null;
       })
 
@@ -100,6 +108,7 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.status = "idle";
         state.user = null;
+        state.profile = null;
         state.error = null;
       })
 
@@ -124,5 +133,5 @@ const authSlice = createSlice({
       );
   },
 });
-export const { clearError } = authSlice.actions;
+export const { clearError , updateProfile } = authSlice.actions;
 export default authSlice.reducer;
