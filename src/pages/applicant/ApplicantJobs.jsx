@@ -6,13 +6,15 @@ import {
   fetchApplications,
   withdrawJob,
   applyJob,
+  fetchBookmarks,
+  toggleBookmark,
 } from "../../utils/applicant/applicantSlice";
 import api from "../../api/axios";
 
 const ApplicantJobs = () => {
   const dispatch = useDispatch();
 
-  const { applications } = useSelector((state) => state.applicant);
+  const { applications, bookmarks } = useSelector((state) => state.applicant);
 
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [filter, setFilter] = useState("All");
@@ -21,7 +23,7 @@ const ApplicantJobs = () => {
   const [prepData, setPrepData] = useState(null);
   const [prepLoading, setPrepLoading] = useState(false);
   const [prepError, setPrepError] = useState(null);
-
+  const data = filter === "Bookmarked" ? bookmarks : applications;
   const handleWithdraw = async (jobId) => {
     try {
       const res = await dispatch(withdrawJob(jobId)).unwrap();
@@ -59,7 +61,7 @@ const ApplicantJobs = () => {
 
     try {
       const res = await api.post(`/ai/applicant/guide/${jobId}`);
-      setPrepData(res.data.data); // { questions, topicsToRevise, preparationTips }
+      setPrepData(res.data.data);
     } catch (err) {
       setPrepError(
         err.response?.data?.message ||
@@ -67,6 +69,21 @@ const ApplicantJobs = () => {
       );
     } finally {
       setPrepLoading(false);
+    }
+  };
+
+  const handleRemoveBookmark = async (jobId) => {
+    try {
+      const res = await dispatch(toggleBookmark(jobId)).unwrap();
+      setSuccess(res.message || "Bookmark removed successfully!");
+      setError("");
+
+      document.getElementById("job_modal").close();
+
+      dispatch(fetchBookmarks());
+    } catch (err) {
+      setError(err);
+      setSuccess("");
     }
   };
 
@@ -82,7 +99,11 @@ const ApplicantJobs = () => {
   }, [success, error]);
 
   useEffect(() => {
-    dispatch(fetchApplications(filter));
+    if (filter === "Bookmarked") {
+      dispatch(fetchBookmarks());
+    } else {
+      dispatch(fetchApplications(filter));
+    }
   }, [dispatch, filter]);
 
   return (
@@ -91,9 +112,13 @@ const ApplicantJobs = () => {
         <div className="card-body p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
             <div>
-              <h2 className="text-5xl font-bold">Applied Jobs</h2>
+              <h2 className="text-5xl font-bold">
+                {filter === "Bookmarked" ? "Bookmarked Jobs" : "Applied Jobs"}
+              </h2>
               <p className="mt-2 text-base-content/60 text-lg">
-                Track the progress of your job applications.
+                {filter === "Bookmarked"
+                  ? "Jobs you've saved for later."
+                  : "Track the progress of your job applications."}
               </p>
             </div>
 
@@ -109,14 +134,13 @@ const ApplicantJobs = () => {
                   <option value="Shortlisted">Shortlisted</option>
                   <option value="Rejected">Rejected</option>
                   <option value="Withdrawn">Withdrawn</option>
+                  <option value="Bookmarked">Bookmarked</option>
                 </select>
 
                 <div className="stats shadow">
                   <div className="stat px-6 py-3">
                     <div className="stat-title">Applications</div>
-                    <div className="stat-value text-primary">
-                      {applications.length}
-                    </div>
+                    <div className="stat-value text-primary">{data.length}</div>
                   </div>
                 </div>
               </div>
@@ -136,7 +160,7 @@ const ApplicantJobs = () => {
               </thead>
 
               <tbody>
-                {applications.length === 0 ? (
+                {data.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="text-center py-12">
                       <div className="text-base-content/60">
@@ -146,7 +170,7 @@ const ApplicantJobs = () => {
                     </td>
                   </tr>
                 ) : (
-                  applications.map((application) => (
+                  data.map((application) => (
                     <tr key={application._id} className="hover">
                       <td>
                         <div className="flex items-center gap-4">
@@ -176,25 +200,33 @@ const ApplicantJobs = () => {
                       </td>
 
                       <td>
-                        {new Date(application.createdAt).toLocaleDateString(
-                          "en-GB",
-                        )}
+                        {filter === "Bookmarked"
+                          ? "-"
+                          : new Date(application.createdAt).toLocaleDateString(
+                              "en-GB",
+                            )}
                       </td>
 
                       <td>
-                        <div
-                          className={`badge badge-md ${
-                            application.status === "Applied"
-                              ? "badge-info"
-                              : application.status === "Shortlisted"
-                                ? "badge-success"
-                                : application.status === "Rejected"
-                                  ? "badge-error"
-                                  : "badge-warning"
-                          }`}
-                        >
-                          {application.status}
-                        </div>
+                        {filter === "Bookmarked" ? (
+                          <div className="badge badge-secondary">
+                            Bookmarked
+                          </div>
+                        ) : (
+                          <div
+                            className={`badge badge-md ${
+                              application.status === "Applied"
+                                ? "badge-info"
+                                : application.status === "Shortlisted"
+                                  ? "badge-success"
+                                  : application.status === "Rejected"
+                                    ? "badge-error"
+                                    : "badge-warning"
+                            }`}
+                          >
+                            {application.status}
+                          </div>
+                        )}
                       </td>
 
                       <td className="text-right">
@@ -297,6 +329,16 @@ const ApplicantJobs = () => {
           </div>
 
           <div className="modal-action justify-between">
+            {filter === "Bookmarked" && (
+              <button
+                className="btn btn-error"
+                onClick={() =>
+                  handleRemoveBookmark(selectedApplication.job._id)
+                }
+              >
+                Remove Bookmark
+              </button>
+            )}
             {selectedApplication?.status === "Applied" && (
               <button
                 onClick={() => handleWithdraw(selectedApplication.job._id)}

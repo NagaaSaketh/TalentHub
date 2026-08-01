@@ -103,6 +103,37 @@ export const fetchApplications = createAsyncThunk(
   },
 );
 
+export const fetchBookmarks = createAsyncThunk(
+  "applicant/fetchBookmarks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/jobs/bookmarks");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch bookmarked jobs",
+      );
+    }
+  },
+);
+
+export const toggleBookmark = createAsyncThunk(
+  "applicant/toggleBookmark",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/jobs/${jobId}/bookmark`);
+      return {
+        jobId,
+        message: res.data.message,
+      };
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Something went wrong",
+      );
+    }
+  },
+);
+
 export const updateApplicantProfile = createAsyncThunk(
   "applicant/update",
   async (formData, { rejectWithValue }) => {
@@ -157,6 +188,7 @@ const applicantsSlice = createSlice({
     hasBookmarked: false,
     recruiterProfile: null,
     similarJobs: [],
+    bookmarks: [],
     applicantsCount: 0,
     status: "idle",
     error: null,
@@ -234,7 +266,38 @@ const applicantsSlice = createSlice({
         state.status = "failed";
         state.applications = [];
         state.error = action.payload;
-      });
+      })
+
+      .addCase(fetchBookmarks.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(fetchBookmarks.fulfilled, (state, action) => {
+        state.bookmarks = action.payload;
+        state.error = null;
+      })
+
+      .addCase(fetchBookmarks.rejected, (state, action) => {
+        state.stats = "loading";
+        state.error = action.payload;
+      })
+
+      .addCase(toggleBookmark.pending,(state)=>{
+        state.status="loading";
+      })
+
+      .addCase(toggleBookmark.fulfilled, (state, action) => {
+        state.bookmarks = state.bookmarks.filter(
+          (bookmark) => bookmark.job._id !== action.payload.jobId,
+        );
+      })
+
+      .addCase(toggleBookmark.rejected,(state,action)=>{
+        state.status = "failed",
+        state.error = action.payload
+      })
+
+      
   },
 });
 export const { setSearch } = applicantsSlice.actions;
