@@ -97,47 +97,72 @@ const RecruiterJobs = () => {
           </li>
         )}
 
-        {jobs.map((job, index) => (
-          <motion.li
-            key={job._id}
-            className="list-row items-center"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <div className="text-3xl font-light opacity-30 w-12">
-              {(index + 1).toString().padStart(2, "0")}
-            </div>
+        {status === "loading" ? (
+          <li className="flex justify-center py-10">
+            <span className="loading loading-spinner loading-lg"></span>
+          </li>
+        ) : jobs.length === 0 ? (
+          <li className="py-20">
+            <div className="flex flex-col items-center justify-center text-center">
+              <h3 className="text-2xl font-bold">No jobs posted yet</h3>
 
-            <div className="avatar placeholder">
-              <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                <span>{job.company.charAt(0)}</span>
-              </div>
-            </div>
+              <p className="text-base-content/60 max-w-md mt-3">
+                Your published jobs will appear here. Create your first job
+                posting to start receiving applications from talented
+                candidates.
+              </p>
 
-            <div className="list-col-grow">
-              <div className="font-bold text-lg">{job.title}</div>
-
-              <div className="text-sm opacity-60">{job.company}</div>
-            </div>
-
-            <div>
-              <div
-                className={`badge badge-lg ${
-                  job.isArchived ? "badge-warning" : "badge-success"
-                }`}
+              <Link
+                to="/recruiter/publish-job"
+                className="btn btn-primary mt-6"
               >
-                {job.isArchived ? "Archived" : "Active"}
-              </div>
+                Publish Your First Job
+              </Link>
             </div>
-            <button
-              className="btn btn-outline btn-primary btn-sm"
-              onClick={() => handleView(job)}
+          </li>
+        ) : (
+          jobs.map((job, index) => (
+            <motion.li
+              key={job._id}
+              className="list-row items-center"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
             >
-              View
-            </button>
-          </motion.li>
-        ))}
+              <div className="text-3xl font-light opacity-30 w-12">
+                {(index + 1).toString().padStart(2, "0")}
+              </div>
+
+              <div className="avatar placeholder">
+                <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
+                  <span>{job.company.charAt(0)}</span>
+                </div>
+              </div>
+
+              <div className="list-col-grow">
+                <div className="font-bold text-lg">{job.title}</div>
+
+                <div className="text-sm opacity-60">{job.company}</div>
+              </div>
+
+              <div>
+                <div
+                  className={`badge badge-lg ${
+                    job.isArchived ? "badge-warning" : "badge-success"
+                  }`}
+                >
+                  {job.isArchived ? "Archived" : "Active"}
+                </div>
+              </div>
+              <button
+                className="btn btn-outline btn-primary btn-sm"
+                onClick={() => handleView(job)}
+              >
+                View
+              </button>
+            </motion.li>
+          ))
+        )}
       </ul>
 
       <dialog id="job_modal" className="modal">

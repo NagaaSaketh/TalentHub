@@ -457,6 +457,8 @@ const PublishJob = () => {
                         <option value="Hyderabad, Telangana">Hyderabad</option>
                         <option value="Mumbai, Maharashtra">Mumbai</option>
                         <option value="Pune, Maharashtra">Pune</option>
+                        <option value="Kochi, Kerala">Kerala</option>
+                        <option value="Delhi">Delhi</option>
                       </select>
                     </fieldset>
 

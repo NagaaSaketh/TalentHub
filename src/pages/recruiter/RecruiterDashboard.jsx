@@ -40,6 +40,17 @@ const RecruiterDashboard = () => {
           Manage jobs, monitor applications and hire top talent.
         </p>
       </motion.div>
+      {stats.activeJobs === 0 &&
+        stats.totalApplications === 0 &&
+        stats.shortlisted === 0 &&
+        stats.archivedJobs === 0 && (
+          <div className="alert alert-info mt-8">
+            <span>
+              👋 Welcome to TalentHub! Publish your first job posting to start
+              receiving applications from talented candidates.
+            </span>
+          </div>
+        )}
 
       <div className="stats stats-vertical lg:stats-horizontal shadow w-full mt-10 border border-base-300 bg-base-100">
         <div className="stat">
@@ -113,86 +124,92 @@ const RecruiterDashboard = () => {
             </Link>
           </div>
 
-          <div className="overflow-x-auto mt-6">
-            <table className="table table-zebra">
-              <thead>
-                <tr>
-                  <th>Applicant</th>
-                  <th>Job</th>
-                  <th>Applied</th>
-                  <th>Status</th>
+          {recentApplications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <h3 className="text-2xl font-semibold">No applications yet</h3>
 
-                </tr>
-              </thead>
+              <p className="text-base-content/60 mt-3 max-w-md">
+                Your recent applications from candidates will appear here once
+                you publish a job and start receiving applicants.
+              </p>
 
-              <tbody>
-                {recentApplications.map((app, index) => (
-                  <motion.tr
-                    key={app._id}
-                    initial={{
-                      opacity: 0,
-                      x: 30,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                    }}
-                    transition={{
-                      delay: index * 0.08,
-                    }}
-                  >
-                    <td>
-                      <div className="flex items-center gap-4">
-                        <div className="avatar placeholder">
-                          <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                            <span className="font-bold">
-                              {app.applicant?.user?.fullname?.charAt(0)}
-                            </span>
+              <Link
+                to="/recruiter/publish-job"
+                className="btn btn-primary mt-6"
+              >
+                Publish Your First Job
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto mt-6">
+              <table className="table table-zebra">
+                <thead>
+                  <tr>
+                    <th>Applicant</th>
+                    <th>Job</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {recentApplications.map((app, index) => (
+                    <motion.tr
+                      key={app._id}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.08 }}
+                    >
+                      <td>
+                        <div className="flex items-center gap-4">
+                          <div className="avatar placeholder">
+                            <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
+                              <span className="font-bold">
+                                {app.applicant?.user?.fullname?.charAt(0)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="font-semibold">
+                              {app.applicant?.user?.fullname}
+                            </div>
+
+                            <div className="text-sm opacity-60">
+                              {app.applicant?.user?.email}
+                            </div>
                           </div>
                         </div>
+                      </td>
 
-                        <div>
-                          <div className="font-semibold">
-                            {app.applicant?.user?.fullname}
-                          </div>
+                      <td className="font-medium">{app.job?.title}</td>
 
-                          <div className="text-sm opacity-60">
-                            {app.applicant?.user?.email}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
+                      <td>{new Date(app.createdAt).toLocaleDateString()}</td>
 
-                    <td className="font-medium">{app.job?.title}</td>
+                      <td>
+                        {app.status === "Applied" && (
+                          <div className="badge badge-info">Applied</div>
+                        )}
 
-                    <td>{new Date(app.createdAt).toLocaleDateString()}</td>
+                        {app.status === "Shortlisted" && (
+                          <div className="badge badge-success">Shortlisted</div>
+                        )}
 
-                    <td>
-                      {app.status === "Applied" && (
-                        <div className="badge badge-info">Applied</div>
-                      )}
+                        {app.status === "Rejected" && (
+                          <div className="badge badge-error">Rejected</div>
+                        )}
 
-                      {app.status === "Shortlisted" && (
-                        <div className="badge badge-success">Shortlisted</div>
-                      )}
-
-                      {app.status === "Rejected" && (
-                        <div className="badge badge-error">Rejected</div>
-                      )}
-
-                      {app.status === "Withdrawn" && (
-                        <div className="badge badge-neutral">Withdrawn</div>
-                      )}
-                    </td>
-
-                    
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                        {app.status === "Withdrawn" && (
+                          <div className="badge badge-neutral">Withdrawn</div>
+                        )}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      
       </motion.div>
     </motion.div>
   );

@@ -430,7 +430,7 @@ const Register = () => {
                   <fieldset className="fieldset">
                     <legend className="fieldset-legend">Experience</legend>
                     <select
-                      name="experience"
+                      name="totalExperience"
                       className="select w-full"
                       value={formData.totalExperience}
                       onChange={handleChange}
@@ -439,7 +439,7 @@ const Register = () => {
                         Select your experience
                       </option>
                       {EXPERIENCE_OPTIONS.map((opt, index) => (
-                        <option key={index} value={opt.value}>
+                        <option key={opt.value} value={opt.value}>
                           {opt.label}
                         </option>
                       ))}
