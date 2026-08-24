@@ -168,8 +168,8 @@ const JobListing = () => {
                               <div className="flex items-center gap-1">
                                 <IndianRupee size={16} />
                                 <span>
-                                  {(job.salary?.min / 100000).toFixed(1)} -{" "}
-                                  {(job.salary?.max / 100000).toFixed(1)} LPA
+                                  {job.salary?.min} -{" "}
+                                  {job.salary?.max} LPA
                                 </span>
                               </div>
 

@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { createJobs } from "../../utils/recruiter/recruiterSlice";
@@ -23,7 +23,7 @@ const PublishJob = () => {
   const [jobData, setJobData] = useState(initialJobData);
   const [skillInput, setSkillInput] = useState("");
   const [responsibilityInput, setResponsibilityInput] = useState("");
-  const [success, setSucess] = useState("");
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const saveDraft = () => {
@@ -36,10 +36,10 @@ const PublishJob = () => {
       }),
     );
 
-    setSucess("Draft saved successfully!");
+    setSuccess("Draft saved successfully!");
     setError("");
 
-    setTimeout(() => setSucess(""), 3000);
+    setTimeout(() => setSuccess(""), 3000);
   };
 
   const handleChange = (e) => {
@@ -108,8 +108,94 @@ const PublishJob = () => {
     }));
   };
 
+  const validateJob = () => {
+    if (!jobData.title.trim()) {
+      return "Job title is required";
+    }
+
+    if (!/[A-Za-z]/.test(jobData.title)) {
+      return "Please enter a valid job title";
+    }
+
+    if (!jobData.company.trim()) {
+      return "Company name is required";
+    }
+
+    if (!/[A-Za-z]/.test(jobData.company)) {
+      return "Please enter a valid company name";
+    }
+
+    if (!jobData.jobType) {
+      return "Please select employment type";
+    }
+
+    if (jobData.salary.min === "" || jobData.salary.max === "") {
+      return "Salary range is required";
+    }
+
+    const minSalary = Number(jobData.salary.min);
+    const maxSalary = Number(jobData.salary.max);
+
+    if (minSalary <= 0 || maxSalary <= 0) {
+      return "Salary must be greater than 0";
+    }
+
+    if (minSalary > maxSalary) {
+      return "Minimum salary cannot be greater than maximum salary";
+    }
+
+    if (jobData.requiredExp === "") {
+      return "Please select required experience";
+    }
+
+    if (!jobData.description.trim()) {
+      return "Job description is required";
+    }
+
+    if (jobData.responsibilities.length === 0) {
+      return "Please add at least one responsibility";
+    }
+
+    if (jobData.skills.length === 0) {
+      return "Please add at least one skill";
+    }
+
+    if (!jobData.location) {
+      return "Please select a location";
+    }
+
+    if (!jobData.deadline) {
+      return "Application deadline is required";
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const deadline = new Date(`${jobData.deadline}T00:00:00`);
+
+    if (deadline < today) {
+      return "Application deadline cannot be in the past";
+    }
+
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const validationError = validateJob();
+
+    if (validationError) {
+      setError(validationError);
+      setSuccess("");
+
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+
+      return;
+    }
+
     const payload = {
       ...jobData,
       salary: {
@@ -122,17 +208,19 @@ const PublishJob = () => {
 
     try {
       const res = await dispatch(createJobs(payload)).unwrap();
-      setSucess(res.message || "Job published successfully!");
+
+      setSuccess(res.message || "Job published successfully!");
       setError("");
 
-      setTimeout(() => setSucess(""), 3000);
+      setTimeout(() => setSuccess(""), 3000);
+
       localStorage.removeItem("jobDraft");
 
       setJobData(initialJobData);
       setSkillInput("");
       setResponsibilityInput("");
     } catch (err) {
-      setError(err);
+      setError(err?.message || "Something went wrong!");
       setSuccess("");
 
       setTimeout(() => setError(""), 3000);
@@ -157,7 +245,10 @@ const PublishJob = () => {
         description: parsed.description || "",
         responsibilities: parsed.responsibilities || [],
         requiredExp: parsed.requiredExp || "",
-        deadline: parsed.deadline || "",
+        deadline:
+          parsed.deadline && !isNaN(new Date(parsed.deadline).getTime())
+            ? parsed.deadline
+            : "",
         location: parsed.location || "",
         isRemote: parsed.isRemote || false,
       });
@@ -205,7 +296,7 @@ const PublishJob = () => {
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Job Title</legend>
+                      <legend className="fieldset-legend">Job Title *</legend>
 
                       <input
                         name="title"
@@ -217,7 +308,7 @@ const PublishJob = () => {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Company</legend>
+                      <legend className="fieldset-legend">Company *</legend>
 
                       <input
                         name="company"
@@ -230,7 +321,7 @@ const PublishJob = () => {
 
                     <fieldset className="fieldset">
                       <legend className="fieldset-legend">
-                        Employment Type
+                        Employement Type *
                       </legend>
 
                       <select
@@ -321,7 +412,7 @@ const PublishJob = () => {
                   <div className="grid lg:grid-cols-2 gap-8">
                     <fieldset className="fieldset">
                       <legend className="fieldset-legend">
-                        Job Description
+                        Job Description *
                       </legend>
 
                       <textarea
@@ -335,7 +426,7 @@ const PublishJob = () => {
 
                     <fieldset className="fieldset">
                       <legend className="fieldset-legend">
-                        Responsibilities
+                        Responsibilities *
                       </legend>
 
                       <input
@@ -383,7 +474,7 @@ const PublishJob = () => {
                   </div>
 
                   <fieldset className="fieldset mt-8">
-                    <legend className="fieldset-legend">Skills</legend>
+                    <legend className="fieldset-legend">Skills *</legend>
 
                     <input
                       value={skillInput}
@@ -443,7 +534,7 @@ const PublishJob = () => {
 
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Location</legend>
+                      <legend className="fieldset-legend">Location *</legend>
 
                       <select
                         name="location"
@@ -464,7 +555,7 @@ const PublishJob = () => {
 
                     <fieldset className="fieldset">
                       <legend className="fieldset-legend">
-                        Application Deadline
+                        Application Deadline *
                       </legend>
 
                       <input
