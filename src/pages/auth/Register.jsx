@@ -50,7 +50,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    totalExperience:"",
+    totalExperience: "",
     location: "",
     skills: "",
     companyName: "",
@@ -96,16 +96,39 @@ const Register = () => {
   };
 
   const validate = () => {
-    if (!formData.fullname.trim()) return "Full name is required.";
-    if (!formData.email.trim()) return "Email is required.";
-    if (!formData.password) return "Password is required.";
-    if (formData.password !== formData.confirmPassword)
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const emailRegex = /^[A-Za-z][A-Za-z0-9._-]*@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.fullname.trim()) {
+      return "Full name is required.";
+    }
+
+    if (!nameRegex.test(formData.fullname.trim())) {
+      return "Full name can contain only letters and spaces.";
+    }
+
+    if (!formData.email.trim()) {
+      return "Email is required.";
+    }
+
+    if (!emailRegex.test(formData.email.trim())) {
+      return "Please enter a valid email address.";
+    }
+
+    if (!formData.password) {
+      return "Password is required.";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
       return "Passwords do not match.";
-    if (!formData.agreeToTerms)
+    }
+
+    if (!formData.agreeToTerms) {
       return "You must agree to the Terms of Service and Privacy Policy.";
+    }
+
     return null;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -337,10 +360,12 @@ const Register = () => {
               )}
             </AnimatePresence>
 
-            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Full Name</legend>
+                  <legend className="fieldset-legend">
+                    Full Name <span className="text-error">*</span>
+                  </legend>
                   <label className="input w-full">
                     <User size={16} className="opacity-50" />
                     <input
@@ -355,7 +380,9 @@ const Register = () => {
                 </fieldset>
 
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Email Address</legend>
+                  <legend className="fieldset-legend">
+                    Email Address <span className="text-error">*</span>
+                  </legend>
                   <label className="input w-full">
                     <Mail size={16} className="opacity-50" />
                     <input
@@ -371,7 +398,9 @@ const Register = () => {
                 </fieldset>
 
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Password</legend>
+                  <legend className="fieldset-legend">
+                    Password <span className="text-error">*</span>
+                  </legend>
                   <label className="input w-full">
                     <Lock size={16} className="opacity-50" />
                     <input
@@ -396,7 +425,9 @@ const Register = () => {
                 </fieldset>
 
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Confirm Password</legend>
+                  <legend className="fieldset-legend">
+                    Confirm Password <span className="text-error">*</span>
+                  </legend>
                   <label className="input w-full">
                     <Lock size={16} className="opacity-50" />
                     <input
@@ -514,6 +545,7 @@ const Register = () => {
                 <>
                   <fieldset className="fieldset">
                     <legend className="fieldset-legend">Company Name</legend>
+
                     <label className="input w-full">
                       <Building2 size={16} className="opacity-50" />
                       <input
