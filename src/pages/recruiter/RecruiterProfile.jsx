@@ -33,12 +33,57 @@ const RecruiterProfile = () => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSave = async () => {
     try {
+      if (!formData.companyName.trim()) {
+        setError("Company name is required.");
+        return;
+      }
+
+      if (!formData.designation.trim()) {
+        setError("Designation is required.");
+        return;
+      }
+
+      if (!formData.aboutCompany.trim()) {
+        setError("Company description is required.");
+        return;
+      }
+
+      if (formData.website.trim()) {
+        const website = formData.website.trim();
+
+        const websiteUrl =
+          website.startsWith("http://") || website.startsWith("https://")
+            ? website
+            : `https://${website}`;
+
+        try {
+          const url = new URL(websiteUrl);
+
+          if (!url.hostname.includes(".")) {
+            setError("Please enter a valid company website URL.");
+            return;
+          }
+        } catch {
+          setError("Please enter a valid company website URL.");
+          return;
+        }
+      }
+
       const updatedRecruiter = await dispatch(
-        updateRecruiterProfile(formData),
+        updateRecruiterProfile({
+          ...formData,
+          companyName: formData.companyName.trim(),
+          designation: formData.designation.trim(),
+          aboutCompany: formData.aboutCompany.trim(),
+          website: formData.website.trim(),
+        }),
       ).unwrap();
+
       dispatch(updateProfile(updatedRecruiter));
+
       if (logo) {
         const data = new FormData();
         data.append("logo", logo);
@@ -52,11 +97,13 @@ const RecruiterProfile = () => {
           }),
         );
       }
+
       setSuccess("Profile updated successfully!");
       setError("");
+
       document.getElementById("edit_profile_modal").close();
     } catch (err) {
-      setError(err.message);
+      setError(err?.message || "Failed to update profile.");
       setSuccess("");
     }
   };
@@ -89,21 +136,27 @@ const RecruiterProfile = () => {
           <div className="flex flex-col md:flex-row justify-between gap-6">
             <div className="flex items-center gap-6">
               <div className="avatar placeholder">
-                <div className="w-24 rounded-xl bg-primary text-primary-content">
-                  <span className="text-4xl font-bold">
-                    <img src={profile.companyLogo} alt="company-logo" />
-                  </span>
+                <div className="w-24 rounded-xl flex justify-center items-center bg-primary text-primary-content">
+                  {profile.companyLogo ? (
+                    <img
+                      src={profile.companyLogo}
+                      alt={`${profile.companyName || "Company"} logo`}
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  ) : (
+                    <span className="text-3xl font-bold">
+                      {(profile.companyName || "C").charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div>
                 <h1 className="text-4xl font-bold">
-                  {profile.companyName || "Company Name"}
+                  {profile.companyName || "Company name not provided"}
                 </h1>
 
-                <p className="text-lg opacity-70 mt-1">
-                  {profile.designation || "Recruiter"}
-                </p>
+                <p className="text-lg opacity-70 mt-1">{user?.role}</p>
 
                 <p className="text-sm opacity-60">
                   {user.fullname} • {user.email}
@@ -111,9 +164,14 @@ const RecruiterProfile = () => {
 
                 {profile.website ? (
                   <a
-                    href={profile.website}
+                    href={
+                      profile.website.startsWith("http://") ||
+                      profile.website.startsWith("https://")
+                        ? profile.website
+                        : `https://${profile.website}`
+                    }
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="link link-primary mt-2 inline-block"
                   >
                     {profile.website}
@@ -161,13 +219,17 @@ const RecruiterProfile = () => {
               <div className="flex justify-between border-b pb-2">
                 <span className="opacity-60">Company</span>
 
-                <span className="font-semibold">{profile.companyName}</span>
+                <span className="font-semibold">
+                  {profile.companyName || "-"}
+                </span>
               </div>
 
               <div className="flex justify-between border-b pb-2">
                 <span className="opacity-60">Designation</span>
 
-                <span className="font-semibold">{profile.designation}</span>
+                <span className="font-semibold">
+                  {profile.designation || "-"}
+                </span>
               </div>
 
               <div className="flex justify-between border-b pb-2">
@@ -190,11 +252,25 @@ const RecruiterProfile = () => {
       <dialog id="edit_profile_modal" className="modal">
         <div className="modal-box max-w-2xl">
           <h3 className="font-bold text-2xl mb-6">Edit Company Profile</h3>
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="alert alert-error mb-5"
+              >
+                <span>{error}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="space-y-5">
             <div>
               <label className="label">
-                <span className="label-text">Company Name</span>
+                <span className="label-text">
+                  Company Name <span className="text-error">*</span>
+                </span>
               </label>
 
               <input
@@ -203,6 +279,7 @@ const RecruiterProfile = () => {
                 value={formData.companyName}
                 onChange={handleChange}
                 className="input input-bordered w-full"
+                required
               />
             </div>
             <div>
@@ -220,7 +297,9 @@ const RecruiterProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text">Designation</span>
+                <span className="label-text">
+                  Designation <span className="text-error">*</span>
+                </span>
               </label>
 
               <input
@@ -229,6 +308,7 @@ const RecruiterProfile = () => {
                 value={formData.designation}
                 onChange={handleChange}
                 className="input input-bordered w-full"
+                required
               />
             </div>
 
@@ -238,7 +318,7 @@ const RecruiterProfile = () => {
               </label>
 
               <input
-                type="text"
+                type="url"
                 name="website"
                 value={formData.website}
                 onChange={handleChange}
@@ -248,7 +328,9 @@ const RecruiterProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text">About Company</span>
+                <span className="label-text">
+                  About Company <span className="text-error">*</span>
+                </span>
               </label>
 
               <textarea
@@ -257,6 +339,7 @@ const RecruiterProfile = () => {
                 value={formData.aboutCompany}
                 onChange={handleChange}
                 className="textarea textarea-bordered w-full"
+                required
               />
             </div>
           </div>

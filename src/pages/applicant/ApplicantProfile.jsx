@@ -48,15 +48,53 @@ const ApplicantProfile = () => {
   );
 
   const handleSave = async () => {
+    setError("");
+    setSuccess("");
+
+    if (!formData.location.trim()) {
+      setError("Location is required.");
+      return;
+    }
+
+    if (
+      formData.totalExperience === "" ||
+      formData.totalExperience === null ||
+      formData.totalExperience === undefined
+    ) {
+      setError("Total experience is required.");
+      return;
+    }
+
+    if (Number(formData.totalExperience) < 0) {
+      setError("Total experience cannot be negative.");
+      return;
+    }
+
+    const skillsArray = formData.skills
+      .split(",")
+      .map((skill) => skill.trim())
+      .filter(Boolean);
+
+    if (skillsArray.length === 0) {
+      setError("At least one skill is required.");
+      return;
+    }
+
+    if (!formData.bio.trim()) {
+      setError("Bio is required.");
+      return;
+    }
+
     try {
       const payload = {
         ...formData,
-        skills: formData.skills
-          .split(",")
-          .map((skill) => skill.trim())
-          .filter(Boolean),
+        location: formData.location.trim(),
+        totalExperience: Number(formData.totalExperience),
+        bio: formData.bio.trim(),
+        skills: skillsArray,
         experience: formData.experience,
       };
+
       const updatedApplicant = await dispatch(
         updateApplicantProfile(payload),
       ).unwrap();
@@ -65,7 +103,6 @@ const ApplicantProfile = () => {
 
       if (photo) {
         const data = new FormData();
-
         data.append("photo", photo);
 
         const uploaded = await dispatch(uploadApplicantPhoto(data)).unwrap();
@@ -80,7 +117,6 @@ const ApplicantProfile = () => {
 
       if (resume) {
         const data = new FormData();
-
         data.append("resume", resume);
 
         const uploaded = await dispatch(uploadResume(data)).unwrap();
@@ -98,11 +134,10 @@ const ApplicantProfile = () => {
 
       document.getElementById("edit_profile_modal").close();
     } catch (err) {
-      setError(err);
+      setError(err?.message || "Failed to update profile.");
       setSuccess("");
     }
   };
-
   const addExperience = () => {
     setFormData({
       ...formData,
@@ -438,6 +473,19 @@ const ApplicantProfile = () => {
         <div className="modal-box max-w-3xl">
           <h3 className="font-bold text-2xl mb-6">Edit Applicant Profile</h3>
 
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="alert alert-error mb-5"
+              >
+                <span>{error}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="space-y-5">
             <div>
               <label className="label">
@@ -454,7 +502,9 @@ const ApplicantProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text font-medium">Upload / Edit Resume</span>
+                <span className="label-text font-medium">
+                  Upload / Edit Resume
+                </span>
               </label>
 
               <input
@@ -467,7 +517,9 @@ const ApplicantProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text font-medium">Location</span>
+                <span className="label-text font-medium">
+                  Location <span className="text-error">*</span>
+                </span>
               </label>
 
               <input
@@ -483,7 +535,7 @@ const ApplicantProfile = () => {
             <div>
               <label className="label">
                 <span className="label-text font-medium">
-                  Total Experience (Years)
+                  Total Experience (Years) <span className="text-error">*</span>
                 </span>
               </label>
 
@@ -543,7 +595,9 @@ const ApplicantProfile = () => {
             </div>
             <div>
               <label className="label">
-                <span className="label-text font-medium">Skills</span>
+                <span className="label-text font-medium">
+                  Skills <span className="text-error">*</span>
+                </span>
               </label>
 
               <input
@@ -564,7 +618,9 @@ const ApplicantProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text font-medium">Bio</span>
+                <span className="label-text font-medium">
+                  Bio <span className="text-error">*</span>
+                </span>
               </label>
 
               <textarea

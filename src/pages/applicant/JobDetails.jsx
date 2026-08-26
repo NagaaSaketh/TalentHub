@@ -35,6 +35,9 @@ const JobDetails = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  console.log(recruiterProfile);
+  
+
   useEffect(() => {
     dispatch(fetchJobDetails(id));
   }, [dispatch, id]);
@@ -252,18 +255,27 @@ const JobDetails = () => {
                         <div>
                           <h2 className="text-xl font-semibold">Website</h2>
 
-                          <a
-                            href={
-                              recruiterProfile?.website?.startsWith("http")
-                                ? recruiterProfile.website
-                                : `https://${recruiterProfile?.website}`
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="link link-primary mt-3"
-                          >
-                            Visit Company Website
-                          </a>
+                          {recruiterProfile?.website ? (
+                            <a
+                              href={
+                                recruiterProfile.website.startsWith(
+                                  "http://",
+                                ) ||
+                                recruiterProfile.website.startsWith("https://")
+                                  ? recruiterProfile.website
+                                  : `https://${recruiterProfile.website}`
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="link link-primary mt-3 inline-block"
+                            >
+                              Visit Company Website
+                            </a>
+                          ) : (
+                            <p className="text-sm text-base-content/60 mt-3">
+                              No company website provided.
+                            </p>
+                          )}
                         </div>
                       </div>
                     )}

@@ -129,16 +129,22 @@ const RecruiterDashboard = () => {
               <h3 className="text-2xl font-semibold">No applications yet</h3>
 
               <p className="text-base-content/60 mt-3 max-w-md">
-                Your recent applications from candidates will appear here once
-                you publish a job and start receiving applicants.
+                Applications from candidates will appear here once they apply to
+                your published jobs.
               </p>
 
-              <Link
-                to="/recruiter/publish-job"
-                className="btn btn-primary mt-6"
-              >
-                Publish Your First Job
-              </Link>
+              {stats.activeJobs === 0 ? (
+                <Link
+                  to="/recruiter/publish-job"
+                  className="btn btn-primary mt-6"
+                >
+                  Publish Your First Job
+                </Link>
+              ) : (
+                <Link to="/recruiter/jobs" className="btn btn-primary mt-6">
+                  View Your Jobs
+                </Link>
+              )}
             </div>
           ) : (
             <div className="overflow-x-auto mt-6">

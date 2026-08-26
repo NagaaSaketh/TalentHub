@@ -425,31 +425,47 @@ const AllApplications = () => {
 
                       <div className="modal-action justify-between">
                         <div className="flex gap-3">
-                          <div
-                            className={isWithdrawn ? "tooltip" : ""}
-                            data-tip="Candidate withdrawn application"
-                          >
-                            <button
-                              className="btn btn-success"
-                              onClick={handleShortlist}
-                              disabled={isWithdrawn}
-                            >
-                              Shortlist
-                            </button>
-                          </div>
+                          {selectedApplication.status === "Applied" && (
+                            <>
+                              <button
+                                className="btn btn-success"
+                                onClick={handleShortlist}
+                              >
+                                Shortlist
+                              </button>
 
-                          <div
-                            className={isWithdrawn ? "tooltip" : ""}
-                            data-tip="Candidate withdrawn application"
-                          >
-                            <button
-                              className="btn btn-error"
-                              onClick={handleReject}
-                              disabled={isWithdrawn}
-                            >
-                              Reject
-                            </button>
-                          </div>
+                              <button
+                                className="btn btn-error"
+                                onClick={handleReject}
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+
+                          {selectedApplication.status === "Shortlisted" && (
+                            <div className="alert alert-success py-2">
+                              <span className="font-semibold">
+                                Applicant is already shortlisted.
+                              </span>
+                            </div>
+                          )}
+
+                          {selectedApplication.status === "Rejected" && (
+                            <div className="alert alert-error py-2">
+                              <span className="font-semibold">
+                                Applicant has already been rejected.
+                              </span>
+                            </div>
+                          )}
+
+                          {selectedApplication.status === "Withdrawn" && (
+                            <div className="alert alert-warning py-2">
+                              <span className="font-semibold">
+                                Applicant withdrew this application.
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         <form method="dialog">
