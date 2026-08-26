@@ -410,10 +410,24 @@ const ApplicantProfile = () => {
                     rel="noreferrer"
                     className="btn btn-primary btn-sm"
                   >
-                    Download Resume
+                    View Resume
                   </a>
                 ) : (
-                  <button className="btn btn-disabled btn-sm">No Resume</button>
+                  <div className="space-y-3">
+                    <p className="text-sm opacity-60">No resume uploaded.</p>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm"
+                      onClick={() =>
+                        document
+                          .getElementById("edit_profile_modal")
+                          .showModal()
+                      }
+                    >
+                      Upload Resume
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -440,7 +454,7 @@ const ApplicantProfile = () => {
 
             <div>
               <label className="label">
-                <span className="label-text font-medium">Resume</span>
+                <span className="label-text font-medium">Upload / Edit Resume</span>
               </label>
 
               <input

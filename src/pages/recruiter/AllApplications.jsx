@@ -264,7 +264,8 @@ const AllApplications = () => {
                         Applicant Details
                       </h3>
 
-                      <div className="flex items-center gap-5 mb-8">
+                      {/* Applicant Header */}
+                      <div className="flex items-start gap-5 mb-8">
                         <div className="avatar placeholder">
                           <div className="w-16 flex items-center justify-center rounded-full shadow-lg bg-primary text-primary-content">
                             <span className="text-2xl font-bold">
@@ -275,7 +276,7 @@ const AllApplications = () => {
                           </div>
                         </div>
 
-                        <div>
+                        <div className="flex-1">
                           <h2 className="text-2xl font-bold">
                             {selectedApplication.applicant.user.fullname}
                           </h2>
@@ -284,23 +285,32 @@ const AllApplications = () => {
                             {selectedApplication.applicant.user.email}
                           </p>
 
-                          <div className="mt-2 flex gap-2">
-                            <div className="badge badge-outline">
-                              Years of Experience:{" "}
-                              {
-                                selectedApplication.applicant.totalExperience
-                              }{" "}
-                            </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className="badge badge-outline">
+                              Experience:{" "}
+                              {selectedApplication.applicant.totalExperience > 0
+                                ? `${selectedApplication.applicant.totalExperience} years`
+                                : "Not provided"}
+                            </span>
 
-                            <div className="badge badge-outline">
-                              Current Location:{" "}
-                              {selectedApplication.applicant.location}
-                            </div>
+                            {selectedApplication.applicant.location && (
+                              <span className="badge badge-outline">
+                                {selectedApplication.applicant.location}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-5">
+                      {/* Job + Experience */}
+                      <div
+                        className={`grid gap-5 ${
+                          selectedApplication.applicant.experience?.length > 0
+                            ? "md:grid-cols-2"
+                            : "grid-cols-1"
+                        }`}
+                      >
+                        {/* Job Applied */}
                         <div className="card bg-base-200 border border-base-300">
                           <div className="card-body">
                             <h3 className="card-title">Job Applied</h3>
@@ -315,58 +325,89 @@ const AllApplications = () => {
 
                             <div className="divider my-2"></div>
 
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="text-sm opacity-60">Applied On</p>
+                            <div>
+                              <p className="text-sm opacity-60">Applied On</p>
 
-                                <p className="font-semibold">
-                                  {new Date(
-                                    selectedApplication.createdAt,
-                                  ).toLocaleDateString()}
-                                </p>
+                              <p className="font-semibold">
+                                {new Date(
+                                  selectedApplication.createdAt,
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Experience - ONLY SHOW IF EXPERIENCE EXISTS */}
+                        {selectedApplication.applicant.experience?.length >
+                          0 && (
+                          <div className="card bg-base-200 border border-base-300">
+                            <div className="card-body">
+                              <div className="flex items-center justify-between">
+                                <h3 className="card-title">Experience</h3>
+
+                                <span className="badge badge-primary badge-sm">
+                                  {
+                                    selectedApplication.applicant.experience
+                                      .length
+                                  }{" "}
+                                  {selectedApplication.applicant.experience
+                                    .length === 1
+                                    ? "position"
+                                    : "positions"}
+                                </span>
+                              </div>
+
+                              <div className="space-y-3 mt-2">
+                                {selectedApplication.applicant.experience.map(
+                                  (exp) => (
+                                    <div
+                                      key={exp._id}
+                                      className="rounded-xl bg-base-100 border border-base-300 p-4"
+                                    >
+                                      <p className="font-bold">
+                                        {exp.position ||
+                                          "Position not provided"}
+                                      </p>
+
+                                      <p className="text-sm opacity-70 mt-1">
+                                        {exp.company || "Company not provided"}
+                                      </p>
+                                    </div>
+                                  ),
+                                )}
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="card bg-base-200 border border-base-300">
-                          <div className="card-body">
-                            <h3 className="card-title">Experience</h3>
-
-                            <div className="space-y-3">
-                              {selectedApplication.applicant.experience.map(
-                                (exp) => (
-                                  <div
-                                    key={exp._id}
-                                    className="rounded-xl bg-base-100 border border-base-300 p-4"
-                                  >
-                                    <p className="font-bold">{exp.position}</p>
-
-                                    <p className="opacity-70">{exp.company}</p>
-                                  </div>
-                                ),
-                              )}
-                            </div>
-                          </div>
-                        </div>
+                        )}
                       </div>
 
                       <div className="mb-6">
                         <h3 className="font-semibold text-lg mb-3">Skills</h3>
 
-                        <div className="flex flex-wrap gap-2">
-                          {selectedApplication.applicant.skills.map((skill) => (
-                            <span
-                              key={skill}
-                              className="badge badge-primary badge-md"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
+                        {selectedApplication.applicant.skills?.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {selectedApplication.applicant.skills.map(
+                              (skill) => (
+                                <span
+                                  key={skill}
+                                  className="badge badge-primary"
+                                >
+                                  {skill}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-lg bg-base-200 px-4 py-3 text-sm opacity-60">
+                            No skills provided yet.
+                          </div>
+                        )}
                       </div>
 
-                      {selectedApplication.applicant.resume && (
-                        <div className="mt-6">
+                      <div className="mt-6">
+                        <h3 className="font-semibold text-lg mb-3">Resume</h3>
+
+                        {selectedApplication.applicant.resume ? (
                           <a
                             href={selectedApplication.applicant.resume}
                             target="_blank"
@@ -375,8 +416,12 @@ const AllApplications = () => {
                           >
                             View Resume
                           </a>
-                        </div>
-                      )}
+                        ) : (
+                          <div className="rounded-lg bg-base-200 px-4 py-3 text-sm opacity-60">
+                            No resume uploaded.
+                          </div>
+                        )}
+                      </div>
 
                       <div className="modal-action justify-between">
                         <div className="flex gap-3">

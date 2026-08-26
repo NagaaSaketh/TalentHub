@@ -28,6 +28,7 @@ const JobDetails = () => {
     applicantsCount,
     hasApplied,
     hasBookmarked,
+    hasResume,
   } = useSelector((state) => state.applicant);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("details");
@@ -278,13 +279,63 @@ const JobDetails = () => {
                 <h2 className="card-title">Apply for this Job</h2>
 
                 <div className="space-y-3">
-                  <button
-                    onClick={handleApplyJob}
-                    disabled={hasApplied}
-                    className="btn btn-primary w-full"
-                  >
-                    {hasApplied ? "Already Applied" : "Apply Now"}
-                  </button>
+                  {hasApplied ? (
+                    <>
+                      {/* Application submitted */}
+                      <div className="alert alert-success">
+                        <div>
+                          <p className="font-semibold">Application submitted</p>
+                          <p className="text-sm">
+                            Your application has been sent to the recruiter.
+                          </p>
+                        </div>
+                      </div>
+
+                      <button disabled className="btn btn-disabled w-full">
+                        Already Applied
+                      </button>
+                    </>
+                  ) : hasResume ? (
+                    <>
+                      {/* Resume ready */}
+                      <div className="alert alert-success">
+                        <div>
+                          <p className="font-semibold">Resume attached</p>
+                          <p className="text-sm">
+                            Your profile resume will be used for this
+                            application.
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={handleApplyJob}
+                        className="btn btn-primary w-full"
+                      >
+                        Apply Now
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {/* Resume missing */}
+                      <div className="alert alert-warning">
+                        <div>
+                          <p className="font-semibold">Resume required</p>
+                          <p className="text-sm">
+                            Please upload a resume to your profile before
+                            applying.
+                          </p>
+                        </div>
+                      </div>
+
+                      <Link
+                        to="/applicant/profile"
+                        className="btn btn-primary w-full"
+                      >
+                        Upload Resume
+                      </Link>
+                    </>
+                  )}
 
                   <button
                     onClick={() =>

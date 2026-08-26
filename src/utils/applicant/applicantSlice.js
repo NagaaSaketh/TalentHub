@@ -179,6 +179,7 @@ const applicantsSlice = createSlice({
     jobs: [],
     selectedJob: null,
     hasApplied: false,
+    hasResume: false,
     stats: {},
     search: "",
     recentActivity: [],
@@ -221,16 +222,17 @@ const applicantsSlice = createSlice({
       })
 
       .addCase(fetchJobDetails.fulfilled, (state, action) => {
-        (((state.status = "success"),
-        (state.selectedJob = action.payload.job),
-        (state.applicantsCount = action.payload.applicantsCount),
-        (state.recruiterProfile = action.payload.recruiterProfile),
-        (state.similarJobs = action.payload.similarJobs),
-        (state.hasApplied = action.payload.hasApplied)),
-          (state.hasBookmarked = action.payload.hasBookmarked));
+        state.status = "success";
+        state.selectedJob = action.payload.job;
+        state.applicantsCount = action.payload.applicantsCount;
+        state.recruiterProfile = action.payload.recruiterProfile;
+        state.similarJobs = action.payload.similarJobs;
+        state.hasApplied = action.payload.hasApplied;
+        state.hasBookmarked = action.payload.hasBookmarked;
+        state.hasResume = action.payload.hasResume;
+
         state.error = null;
       })
-
       .addCase(fetchJobDetails.rejected, (state, action) => {
         ((state.status = "failed"), (state.jobs = []));
         state.error = action.payload;
@@ -282,8 +284,8 @@ const applicantsSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(toggleBookmark.pending,(state)=>{
-        state.status="loading";
+      .addCase(toggleBookmark.pending, (state) => {
+        state.status = "loading";
       })
 
       .addCase(toggleBookmark.fulfilled, (state, action) => {
@@ -292,12 +294,9 @@ const applicantsSlice = createSlice({
         );
       })
 
-      .addCase(toggleBookmark.rejected,(state,action)=>{
-        state.status = "failed",
-        state.error = action.payload
-      })
-
-      
+      .addCase(toggleBookmark.rejected, (state, action) => {
+        ((state.status = "failed"), (state.error = action.payload));
+      });
   },
 });
 export const { setSearch } = applicantsSlice.actions;
