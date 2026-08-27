@@ -10,29 +10,37 @@ import RecruiterLayout from "./components/recruiter/RecruiterLayout";
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
 const JobListing = lazy(() => import("./pages/applicant/JobListing"));
-const RecruiterDashboard = lazy(() => import("./pages/recruiter/RecruiterDashboard"));
+const RecruiterDashboard = lazy(
+  () => import("./pages/recruiter/RecruiterDashboard"),
+);
 const JobDetails = lazy(() => import("./pages/applicant/JobDetails"));
-const ApplicantProfile = lazy(() => import("./pages/applicant/ApplicantProfile"));
+const ApplicantProfile = lazy(
+  () => import("./pages/applicant/ApplicantProfile"),
+);
 const PublishJob = lazy(() => import("./pages/recruiter/PublishJob"));
-const RecruiterProfile = lazy(() => import("./pages/recruiter/RecruiterProfile"));
+const RecruiterProfile = lazy(
+  () => import("./pages/recruiter/RecruiterProfile"),
+);
 const AllApplications = lazy(() => import("./pages/recruiter/AllApplications"));
 const RecruiterJobs = lazy(() => import("./pages/recruiter/RecruiterJobs"));
 const EditJob = lazy(() => import("./pages/recruiter/EditJob"));
 const ArchivedJobs = lazy(() => import("./pages/recruiter/ArchivedJobs"));
-const ApplicantDashboard = lazy(() => import("./pages/applicant/ApplicantDashboard"));
+const ApplicantDashboard = lazy(
+  () => import("./pages/applicant/ApplicantDashboard"),
+);
 const ApplicantJobs = lazy(() => import("./pages/applicant/ApplicantJobs"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   const dispatch = useDispatch();
-  const { user, status } = useSelector((state) => state.user);
+  const { user, initializing } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchCurrentUser());
   }, [dispatch]);
 
-  if (status === "loading") {
+  if (initializing) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>

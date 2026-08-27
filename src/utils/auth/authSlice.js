@@ -83,6 +83,7 @@ const authSlice = createSlice({
     profile: null,
     status: "loading",
     error: null,
+    initializing: true,
   },
   reducers: {
     clearError: (state) => {
@@ -96,10 +97,12 @@ const authSlice = createSlice({
     builder
       .addCase(fetchCurrentUser.pending, (state) => {
         state.status = "loading";
+        state.initializing = true;
       })
 
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.status = "success";
+        state.initializing = false;
         state.user = action.payload.user;
         state.profile = action.payload.profile;
         state.error = null;
@@ -110,6 +113,7 @@ const authSlice = createSlice({
           (state.user = null),
           (state.profile = null));
         state.error = null;
+        state.initializing = false;
       })
 
       .addCase(loginUser.fulfilled, (state, action) => {

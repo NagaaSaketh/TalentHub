@@ -36,7 +36,8 @@ const EXPERIENCE_OPTIONS = [
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading } = useSelector((state) => state.user);
+  const { user, status } = useSelector((state) => state.user);
+  const loading = status === "loading";
 
   const [role, setRole] = useState("applicant");
   const [showPassword, setShowPassword] = useState(false);
@@ -189,7 +190,10 @@ const Register = () => {
         },
       });
     } catch (err) {
-      setFormError(err);
+      console.log("Registration error:", err);
+      setFormError(
+        typeof err === "string" ? err : err?.message || "Failed to register!",
+      );
     }
   };
 
@@ -348,14 +352,14 @@ const Register = () => {
               {formError && (
                 <motion.div
                   key="form-error"
-                  role="alert"
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: "auto", marginBottom: 16 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="alert alert-error text-sm overflow-hidden"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex justify-center mb-4"
                 >
-                  <span>{formError}</span>
+                  <span className="badge badge-error badge-lg">
+                    {formError}
+                  </span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -566,7 +570,6 @@ const Register = () => {
                         type="file"
                         className="file-input"
                         name="companyLogo"
-                        className="file-input"
                         onChange={(e) => setCompanyLogo(e.target.files[0])}
                       />
                     </label>
@@ -622,7 +625,8 @@ const Register = () => {
               </label>
 
               <motion.button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
                 className="btn btn-primary w-full"
