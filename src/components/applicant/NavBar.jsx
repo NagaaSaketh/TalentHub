@@ -2,7 +2,6 @@ import { logoutUser } from "../../utils/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRoundIcon } from "lucide-react";
-import { useState } from "react";
 import { setSearch } from "../../utils/applicant/applicantSlice";
 
 const NavBar = ({ showSearch = true }) => {
@@ -22,15 +21,24 @@ const NavBar = ({ showSearch = true }) => {
 
   return (
     <>
-      <div className="navbar bg-base-100 shadow-md px-4 lg:px-8">
-        <div className="flex-1">
-          <Link to="/applicant" className="flex items-center gap-2">
-            <UsersRoundIcon size={34} className="text-blue-600" />
-            <span className="text-xl md:text-2xl font-bold">TalentHub</span>
+      <div className="navbar bg-base-100 shadow-md px-3 sm:px-4 lg:px-8 min-h-16">
+        <div className="flex-1 min-w-0">
+          <Link
+            to="/applicant"
+            className="flex items-center gap-1.5 sm:gap-2 min-w-0"
+          >
+            <UsersRoundIcon
+              size={30}
+              className="text-blue-600 shrink-0 sm:w-8.5 sm:h-8.5"
+            />
+            <span className="text-lg sm:text-xl md:text-2xl font-bold truncate">
+              TalentHub
+            </span>
           </Link>
         </div>
+
         {showSearch && (
-          <div className="hidden md:flex flex-1 justify-center px-6">
+          <div className="hidden md:flex flex-1 justify-center px-4 lg:px-6">
             <label className="input input-bordered w-full max-w-xl">
               <svg
                 className="h-5 w-5 opacity-60"
@@ -54,17 +62,18 @@ const NavBar = ({ showSearch = true }) => {
           </div>
         )}
 
-        <div className="flex-1 flex justify-end items-center gap-2">
-          <h2 className="text-xl font-bold px-2">
+        <div className="flex-1 flex justify-end items-center gap-1 sm:gap-2 min-w-0">
+          <h2 className="text-sm sm:text-base md:text-xl font-bold px-1 sm:px-2 text-right leading-tight max-w-35 sm:max-w-none">
             Welcome back, {user.fullname}
           </h2>
-          <div className="dropdown dropdown-end">
+
+          <div className="dropdown dropdown-end shrink-0">
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost btn-circle avatar"
             >
-              <div className="w-10 rounded-full bg-neutral text-neutral-content flex items-center justify-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-neutral text-neutral-content flex items-center justify-center overflow-hidden">
                 {profile?.photo ? (
                   <img src={profile?.photo} alt="profile-pic" />
                 ) : (
@@ -74,6 +83,7 @@ const NavBar = ({ showSearch = true }) => {
                 )}
               </div>
             </div>
+
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 w-56 rounded-box bg-base-100 shadow-lg z-50"
@@ -123,7 +133,7 @@ const NavBar = ({ showSearch = true }) => {
       </div>
 
       {showSearch && (
-        <div className="md:hidden px-4 py-3 bg-base-100 shadow-sm">
+        <div className="md:hidden px-3 sm:px-4 py-2 sm:py-3 bg-base-100 shadow-sm">
           <label className="input input-bordered w-full">
             <svg
               className="h-5 w-5 opacity-60"

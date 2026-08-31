@@ -124,49 +124,54 @@ const RecruiterJobs = () => {
           jobs.map((job, index) => (
             <motion.li
               key={job._id}
-              className="list-row items-center"
+              className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
             >
-              <div className="text-3xl font-light opacity-30 w-12">
+              <div className="hidden sm:block text-2xl font-light opacity-30 w-10 shrink-0">
                 {(index + 1).toString().padStart(2, "0")}
               </div>
 
-              <div className="avatar placeholder">
-                <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                  <span>{job.company.charAt(0)}</span>
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="avatar placeholder shrink-0">
+                  <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
+                    <span>{job.company?.charAt(0)}</span>
+                  </div>
+                </div>
+
+                <div className="min-w-0">
+                  <div className="font-bold text-lg truncate">{job.title}</div>
+
+                  <div className="text-sm opacity-60 truncate">
+                    {job.company}
+                  </div>
                 </div>
               </div>
 
-              <div className="list-col-grow">
-                <div className="font-bold text-lg">{job.title}</div>
-
-                <div className="text-sm opacity-60">{job.company}</div>
-              </div>
-
-              <div>
+              <div className="flex items-center justify-between gap-3 w-full md:w-auto">
                 <div
-                  className={`badge badge-lg ${
+                  className={`badge badge-md sm:badge-lg ${
                     job.isArchived ? "badge-warning" : "badge-success"
                   }`}
                 >
                   {job.isArchived ? "Archived" : "Active"}
                 </div>
+
+                <button
+                  className="btn btn-outline btn-primary btn-sm"
+                  onClick={() => handleView(job)}
+                >
+                  View
+                </button>
               </div>
-              <button
-                className="btn btn-outline btn-primary btn-sm"
-                onClick={() => handleView(job)}
-              >
-                View
-              </button>
             </motion.li>
           ))
         )}
       </ul>
 
       <dialog id="job_modal" className="modal">
-        <div className="modal-box max-w-4xl">
+        <div className="modal-box w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedJob && (
             <>
               <h2 className="text-3xl font-bold">{selectedJob.title}</h2>
@@ -175,7 +180,7 @@ const RecruiterJobs = () => {
 
               <div className="divider" />
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-base-200 rounded-xl p-4">
                   <p className="text-sm opacity-60">Job Type</p>
                   <p className="font-semibold">{selectedJob.jobType}</p>
@@ -236,14 +241,14 @@ const RecruiterJobs = () => {
                 </p>
               </div>
 
-              <div className="modal-action justify-between">
+              <div className="modal-action flex-col-reverse sm:flex-row sm:justify-between gap-3">
                 <form method="dialog">
                   <button className="btn">Close</button>
                 </form>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary w-full sm:w-auto"
                     onClick={() => {
                       document.getElementById("job_modal").close();
                       navigate(`/recruiter/jobs/${selectedJob._id}/edit`);
@@ -251,8 +256,12 @@ const RecruiterJobs = () => {
                   >
                     Edit Job
                   </button>
+
                   {!selectedJob.isArchived && (
-                    <button className="btn btn-warning" onClick={handleArchive}>
+                    <button
+                      className="btn btn-warning w-full sm:w-auto"
+                      onClick={handleArchive}
+                    >
                       Archive Job
                     </button>
                   )}

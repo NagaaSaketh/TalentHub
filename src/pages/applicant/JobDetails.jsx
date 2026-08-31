@@ -35,9 +35,6 @@ const JobDetails = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  console.log(recruiterProfile);
-  
-
   useEffect(() => {
     dispatch(fetchJobDetails(id));
   }, [dispatch, id]);
@@ -109,7 +106,7 @@ const JobDetails = () => {
   return (
     <>
       <motion.div
-        className="max-w-7xl mx-auto px-6 py-8"
+        className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -129,17 +126,17 @@ const JobDetails = () => {
             >
               <div className="card bg-base-100 border border-base-300 shadow-sm">
                 <div className="card-body">
-                  <div className="flex gap-5">
+                  <div className="flex items-start gap-3 sm:gap-5">
                     <div className="avatar">
-                      <div className="flex items-center justify-center w-20 rounded-xl border">
+                      <div className="flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-xl border shrink-0">
                         <span className="text-3xl font-bold">
                           {selectedJob?.company?.charAt(0)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex-1">
-                      <h1 className="text-4xl font-bold">
+                    <div className="flex-1 min-w-0">
+                      <h1 className="text-2xl sm:text-4xl font-bold wrap-break-word">
                         {selectedJob?.title}
                       </h1>
 
@@ -147,7 +144,7 @@ const JobDetails = () => {
                         {selectedJob?.company}
                       </p>
 
-                      <div className="flex flex-wrap gap-6 mt-5">
+                      <div className="flex flex-wrap gap-2 sm:gap-6 mt-4 sm:mt-5">
                         <div className="badge badge-outline badge-md">
                           <IndianRupee size={12} />
                           {selectedJob?.salary?.min} - <IndianRupee size={12} />
@@ -168,7 +165,7 @@ const JobDetails = () => {
                         )}
                       </div>
 
-                      <div className="flex flex-wrap gap-3 mt-5">
+                      <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-5">
                         <div className="badge badge-primary">
                           {selectedJob?.jobType}
                         </div>
@@ -186,16 +183,16 @@ const JobDetails = () => {
 
                   <div className="divider"></div>
 
-                  <div role="tablist" className="tabs tabs-border">
+                  <div role="tablist" className="tabs tabs-border w-full">
                     <button
-                      className={`tab ${activeTab === "details" && "tab-active"}`}
+                      className={`tab flex-1 sm:flex-none ${activeTab === "details" && "tab-active"}`}
                       onClick={() => setActiveTab("details")}
                     >
                       Job Details
                     </button>
 
                     <button
-                      className={`tab ${activeTab === "company" && "tab-active"}`}
+                      className={`tab flex-1 sm:flex-none ${activeTab === "company" && "tab-active"}`}
                       onClick={() => setActiveTab("company")}
                     >
                       About Company
@@ -219,7 +216,7 @@ const JobDetails = () => {
                           <p>{selectedJob?.description}</p>
                         </div>
 
-                        <div className="mt-8">
+                        <div className="mt-6 sm:mt-8">
                           <h2 className="text-xl font-semibold mb-4">
                             Responsibilities
                           </h2>
@@ -293,7 +290,6 @@ const JobDetails = () => {
                 <div className="space-y-3">
                   {hasApplied ? (
                     <>
-                      {/* Application submitted */}
                       <div className="alert alert-success">
                         <div>
                           <p className="font-semibold">Application submitted</p>
@@ -309,7 +305,6 @@ const JobDetails = () => {
                     </>
                   ) : hasResume ? (
                     <>
-                      {/* Resume ready */}
                       <div className="alert alert-success">
                         <div>
                           <p className="font-semibold">Resume attached</p>
@@ -329,7 +324,6 @@ const JobDetails = () => {
                     </>
                   ) : (
                     <>
-                      {/* Resume missing */}
                       <div className="alert alert-warning">
                         <div>
                           <p className="font-semibold">Resume required</p>
@@ -371,7 +365,7 @@ const JobDetails = () => {
               <div className="card-body">
                 <h2 className="card-title">Recruiter</h2>
 
-                <div className="flex gap-4 items-center">
+                <div className="flex flex-wrap gap-4 items-center">
                   <div className="avatar placeholder">
                     <div className="flex items-center justify-center bg-neutral text-neutral-content rounded-full w-14 text-lg">
                       <span>
@@ -416,7 +410,7 @@ const JobDetails = () => {
                   {similarJobs.slice(0, 2).map((job, index) => (
                     <motion.li
                       key={job._id}
-                      className="list-row"
+                      className="list-row flex items-start gap-3"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
@@ -459,10 +453,10 @@ const JobDetails = () => {
         </div>
       </motion.div>
       <dialog id="recruiter_modal" className="modal">
-        <div className="modal-box max-w-2xl">
+        <div className="modal-box w-11/12 max-w-2xl">
           <h3 className="font-bold text-2xl mb-6">Recruiter Profile</h3>
 
-          <div className="flex gap-5 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-center">
             <div className="avatar placeholder">
               <div className="flex items-center justify-center bg-neutral text-neutral-content rounded-full w-20 text-3xl">
                 <span>
@@ -506,7 +500,7 @@ const JobDetails = () => {
         </div>
       </dialog>
       <dialog id="similar_jobs_modal" className="modal">
-        <div className="modal-box max-w-3xl">
+        <div className="modal-box w-11/12 max-w-3xl">
           <h3 className="font-bold text-2xl mb-6">Similar Jobs</h3>
 
           <ul className="list bg-base-100 rounded-box">
@@ -515,46 +509,51 @@ const JobDetails = () => {
             </li>
 
             {similarJobs?.map((job) => (
-              <li key={job._id} className="list-row">
-                <div className="avatar placeholder">
-                  <div className=" flex items-center justify-center w-12 rounded-xl bg-base-200 border">
-                    <span className="font-bold text-lg">
-                      {job.company?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">{job.title}</div>
+  <li
+    key={job._id}
+    className="list-row flex flex-wrap items-start gap-3"
+  >
+    <div className="avatar placeholder shrink-0">
+      <div className="flex items-center justify-center w-12 rounded-xl bg-base-200 border">
+        <span className="font-bold text-lg">
+          {job.company?.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    </div>
 
-                  <div className="text-xs uppercase font-semibold opacity-60">
-                    {job.company}
-                  </div>
+    <div className="flex-1 min-w-0">
+      <div className="font-semibold">{job.title}</div>
 
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <div className="badge badge-soft badge-primary badge-sm">
-                      {job.location}
-                    </div>
+      <div className="text-xs uppercase font-semibold opacity-60">
+        {job.company}
+      </div>
 
-                    <div className="badge badge-soft badge-primary badge-sm">
-                      {job.requiredExp} Years
-                    </div>
+      <div className="mt-2 flex flex-wrap gap-2">
+        <div className="badge badge-soft badge-primary badge-sm">
+          {job.location}
+        </div>
 
-                    <div className="badge badge-soft badge-primary badge-sm">
-                      ₹{job.salary.min} - ₹{job.salary.max} LPA
-                    </div>
-                  </div>
-                </div>
-                <Link
-                  to={`/applicant/job/${job._id}`}
-                  className="btn btn-primary btn-sm"
-                  onClick={() =>
-                    document.getElementById("similar_jobs_modal").close()
-                  }
-                >
-                  View
-                </Link>
-              </li>
-            ))}
+        <div className="badge badge-soft badge-primary badge-sm">
+          {job.requiredExp} Years
+        </div>
+
+        <div className="badge badge-soft badge-primary badge-sm">
+          ₹{job.salary.min} - ₹{job.salary.max} LPA
+        </div>
+      </div>
+    </div>
+
+    <Link
+      to={`/applicant/job/${job._id}`}
+      className="btn btn-primary btn-sm w-full sm:w-auto sm:ml-auto"
+      onClick={() =>
+        document.getElementById("similar_jobs_modal").close()
+      }
+    >
+      View
+    </Link>
+  </li>
+))}
           </ul>
 
           <div className="modal-action">
@@ -565,7 +564,7 @@ const JobDetails = () => {
         </div>
       </dialog>
       <dialog id="withdraw_modal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box w-11/12 max-w-lg">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕

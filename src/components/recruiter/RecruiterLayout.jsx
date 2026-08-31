@@ -7,10 +7,10 @@ const RecruiterLayout = () => {
     <div className="drawer lg:drawer-open bg-base-200">
       <input id="recruiter-drawer" type="checkbox" className="drawer-toggle" />
 
-      <div className="drawer-content flex flex-col min-h-screen">
+      <div className="drawer-content flex flex-col min-h-screen min-w-0">
         <RecruiterTopbar />
 
-        <div className="flex-1 p-8">
+        <div className="flex-1 min-w-0 p-3 sm:p-5 lg:p-8">
           <Outlet />
         </div>
       </div>

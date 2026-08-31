@@ -109,23 +109,23 @@ const ApplicantJobs = () => {
   return (
     <>
       <div className="card bg-base-100 shadow-xl w-full">
-        <div className="card-body p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+        <div className="card-body p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-5xl font-bold">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
                 {filter === "Bookmarked" ? "Bookmarked Jobs" : "Applied Jobs"}
               </h2>
-              <p className="mt-2 text-base-content/60 text-lg">
+              <p className="mt-2 text-base-content/60 text-sm sm:text-base lg:text-lg">
                 {filter === "Bookmarked"
                   ? "Jobs you've saved for later."
                   : "Track the progress of your job applications."}
               </p>
             </div>
 
-            <div className="flex justify-end">
-              <div className="flex items-center gap-4">
+            <div className="w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <select
-                  className="select select-bordered w-56"
+                  className="select select-bordered w-full sm:w-56"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 >
@@ -137,8 +137,8 @@ const ApplicantJobs = () => {
                   <option value="Bookmarked">Bookmarked</option>
                 </select>
 
-                <div className="stats shadow">
-                  <div className="stat px-6 py-3">
+                <div className="stats shadow w-full sm:w-auto">
+                  <div className="stat px-4 sm:px-6 py-3">
                     <div className="stat-title">Applications</div>
                     <div className="stat-value text-primary">{data.length}</div>
                   </div>
@@ -148,7 +148,7 @@ const ApplicantJobs = () => {
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-base-300">
-            <table className="table table-zebra">
+            <table className="table table-zebra min-w-175">
               <thead className="bg-base-200">
                 <tr>
                   <th>Job</th>
@@ -173,9 +173,9 @@ const ApplicantJobs = () => {
                   data.map((application) => (
                     <tr key={application._id} className="hover">
                       <td>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4">
                           <div className="avatar placeholder">
-                            <div className="flex items-center justify-center bg-primary text-primary-content rounded-xl w-12">
+                            <div className="flex items-center justify-center bg-primary text-primary-content rounded-xl w-10 h-10 sm:w-12 sm:h-12">
                               <span className="font-bold">
                                 {application.job.company.charAt(0)}
                               </span>
@@ -183,11 +183,11 @@ const ApplicantJobs = () => {
                           </div>
 
                           <div>
-                            <div className="font-bold text-base">
+                            <div className="font-bold text-sm sm:text-base">
                               {application.job.title}
                             </div>
 
-                            <div className="text-sm opacity-60">
+                            <div className="text-xs sm:text-sm opacity-60">
                               {application.job.company}
                             </div>
                           </div>
@@ -229,9 +229,9 @@ const ApplicantJobs = () => {
                         )}
                       </td>
 
-                      <td className="text-right">
+                      <td className="text-center sm:text-right">
                         <div className="dropdown dropdown-end">
-                          <button className="btn btn-ghost btn-sm btn-circle">
+                          <button className="btn btn-ghost btn-sm btn-circle min-w-10 min-h-10">
                             <MoreVertical size={18} />
                           </button>
 

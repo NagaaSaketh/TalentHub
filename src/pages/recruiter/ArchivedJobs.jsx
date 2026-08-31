@@ -1,6 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchArchivedJobs,archiveJob } from "../../utils/recruiter/recruiterSlice";
+import {
+  fetchArchivedJobs,
+  archiveJob,
+} from "../../utils/recruiter/recruiterSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ArchivedJobs = () => {
@@ -92,48 +95,49 @@ const ArchivedJobs = () => {
           {archivedJobs.map((job, index) => (
             <motion.li
               key={job._id}
-              className="list-row items-center"
+              className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
             >
-              <div className="text-3xl font-light opacity-30 w-12">
+              <div className="hidden sm:block text-2xl font-light opacity-30 w-10 shrink-0">
                 {(index + 1).toString().padStart(2, "0")}
               </div>
 
-              <div className="avatar placeholder">
-                <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
-                  <span>{job.company?.charAt(0)}</span>
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="avatar placeholder shrink-0">
+                  <div className="flex items-center justify-center bg-primary text-primary-content rounded-full w-12">
+                    <span>{job.company?.charAt(0)}</span>
+                  </div>
+                </div>
+
+                <div className="min-w-0">
+                  <div className="font-bold text-lg truncate">{job.title}</div>
+
+                  <div className="text-sm opacity-60 truncate">
+                    {job.company}
+                  </div>
                 </div>
               </div>
 
-              <div className="list-col-grow">
-                <div className="font-bold text-lg">{job.title}</div>
+              <div className="flex items-center justify-between gap-3 w-full md:w-auto">
+                <div className="badge badge-warning badge-md sm:badge-lg">
+                  Archived
+                </div>
 
-                <div className="text-sm opacity-60">{job.company}</div>
-              </div>
-
-              <div>
-                <div
-                  className={`badge badge-lg ${
-                    job.isArchived ? "badge-warning" : "badge-success"
-                  }`}
+                <button
+                  className="btn btn-outline btn-primary btn-sm"
+                  onClick={() => handleView(job)}
                 >
-                  {job.isArchived ? "Archived" : "Active"}
-                </div>
+                  View
+                </button>
               </div>
-              <button
-                className="btn btn-outline btn-primary btn-sm"
-                onClick={() => handleView(job)}
-              >
-                View
-              </button>
             </motion.li>
           ))}
         </ul>
       )}
       <dialog id="archived_job_modal" className="modal">
-        <div className="modal-box max-w-4xl">
+        <div className="modal-box w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedJob && (
             <>
               <h2 className="text-3xl font-bold">{selectedJob.title}</h2>
@@ -142,7 +146,7 @@ const ArchivedJobs = () => {
 
               <div className="divider" />
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-base-200 rounded-xl p-4">
                   <p className="text-sm opacity-60">Job Type</p>
                   <p className="font-semibold">{selectedJob.jobType}</p>
@@ -203,12 +207,15 @@ const ArchivedJobs = () => {
                 </p>
               </div>
 
-              <div className="modal-action justify-between">
-                <form method="dialog">
-                  <button className="btn">Close</button>
+              <div className="modal-action flex-col-reverse sm:flex-row sm:justify-between gap-3">
+                <form method="dialog" className="w-full sm:w-auto">
+                  <button className="btn w-full sm:w-auto">Close</button>
                 </form>
 
-                <button className="btn btn-success" onClick={handleRestore}>
+                <button
+                  className="btn btn-success w-full sm:w-auto"
+                  onClick={handleRestore}
+                >
                   Restore Job
                 </button>
               </div>

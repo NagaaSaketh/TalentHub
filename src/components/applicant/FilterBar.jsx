@@ -6,7 +6,7 @@ const FilterBar = ({ searchParams, setSearchParams }) => {
       <div className="drawer-side z-50 lg:hidden">
         <label htmlFor="filter-drawer" className="drawer-overlay"></label>
 
-        <aside className="w-72 min-h-full bg-base-100 p-6">
+        <aside className="w-72 max-w-[85vw] min-h-full bg-base-100 p-4 sm:p-6 pr-14 overflow-y-auto">
           <label
             htmlFor="filter-drawer"
             className="btn btn-sm btn-circle btn-ghost absolute right-3 top-3"
@@ -21,7 +21,7 @@ const FilterBar = ({ searchParams, setSearchParams }) => {
         </aside>
       </div>
 
-      <aside className="hidden lg:block w-64 border-r border-base-300 bg-base-100 p-5">
+      <aside className="hidden lg:block w-64 shrink-0 border-r border-base-300 bg-base-100 p-5">
         <Filters
           searchParams={searchParams}
           setSearchParams={setSearchParams}
@@ -137,7 +137,7 @@ function Filters({ searchParams, setSearchParams }) {
           className="range range-primary range-xs"
         />
 
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 text-sm">
           <span>₹0</span>
           <span>₹{searchParams.get("minSalary") || 0} LPA</span>
         </div>
@@ -148,13 +148,12 @@ function Filters({ searchParams, setSearchParams }) {
 
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm">
-            <label>
-              <input
-                type="radio"
-                checked={searchParams.get("jobType") === "Full-Time"}
-                onChange={() => updateParam("jobType", "Full-Time")}
-              />
-            </label>
+            <input
+              type="radio"
+              name="jobType"
+              checked={searchParams.get("jobType") === "Full-Time"}
+              onChange={() => updateParam("jobType", "Full-Time")}
+            />
             Full Time
           </label>
 
