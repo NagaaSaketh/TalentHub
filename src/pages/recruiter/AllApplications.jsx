@@ -314,7 +314,7 @@ const AllApplications = () => {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h2 className="text-xl sm:text-2xl font-bold break-words">
+                          <h2 className="text-xl sm:text-2xl font-bold wrap-break-word">
                             {selectedApplication.applicant.user.fullname}
                           </h2>
 
@@ -400,12 +400,12 @@ const AllApplications = () => {
                                       key={exp._id}
                                       className="rounded-xl bg-base-100 border border-base-300 p-4"
                                     >
-                                      <p className="font-bold break-words">
+                                      <p className="font-bold wrap-break-word">
                                         {exp.position ||
                                           "Position not provided"}
                                       </p>
 
-                                      <p className="text-sm opacity-70 mt-1 break-words">
+                                      <p className="text-sm opacity-70 mt-1 wrap-break-word">
                                         {exp.company || "Company not provided"}
                                       </p>
                                     </div>

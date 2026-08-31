@@ -162,7 +162,7 @@ const JobListing = () => {
                           </div>
 
                           <div className="min-w-0 flex-1">
-                            <h2 className="text-xl sm:text-2xl font-semibold break-words">
+                            <h2 className="text-xl sm:text-2xl font-semibold wrap-break-word">
                               {job.title}
                             </h2>
 
