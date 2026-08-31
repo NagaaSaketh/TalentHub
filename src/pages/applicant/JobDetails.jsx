@@ -146,9 +146,8 @@ const JobDetails = () => {
 
                       <div className="flex flex-wrap gap-2 sm:gap-6 mt-4 sm:mt-5">
                         <div className="badge badge-outline badge-md">
-                          <IndianRupee size={12} />
-                          {selectedJob?.salary?.min} - <IndianRupee size={12} />
-                          {selectedJob?.salary?.max} LPA
+                          
+                          {selectedJob?.salary?.min} - {selectedJob?.salary?.max} LPA 
                         </div>
 
                         <div className="badge badge-outline badge-md">
@@ -509,51 +508,51 @@ const JobDetails = () => {
             </li>
 
             {similarJobs?.map((job) => (
-  <li
-    key={job._id}
-    className="list-row flex flex-wrap items-start gap-3"
-  >
-    <div className="avatar placeholder shrink-0">
-      <div className="flex items-center justify-center w-12 rounded-xl bg-base-200 border">
-        <span className="font-bold text-lg">
-          {job.company?.charAt(0).toUpperCase()}
-        </span>
-      </div>
-    </div>
+              <li
+                key={job._id}
+                className="list-row flex flex-wrap items-start gap-3"
+              >
+                <div className="avatar placeholder shrink-0">
+                  <div className="flex items-center justify-center w-12 rounded-xl bg-base-200 border">
+                    <span className="font-bold text-lg">
+                      {job.company?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                </div>
 
-    <div className="flex-1 min-w-0">
-      <div className="font-semibold">{job.title}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold">{job.title}</div>
 
-      <div className="text-xs uppercase font-semibold opacity-60">
-        {job.company}
-      </div>
+                  <div className="text-xs uppercase font-semibold opacity-60">
+                    {job.company}
+                  </div>
 
-      <div className="mt-2 flex flex-wrap gap-2">
-        <div className="badge badge-soft badge-primary badge-sm">
-          {job.location}
-        </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="badge badge-soft badge-primary badge-sm">
+                      {job.location}
+                    </div>
 
-        <div className="badge badge-soft badge-primary badge-sm">
-          {job.requiredExp} Years
-        </div>
+                    <div className="badge badge-soft badge-primary badge-sm">
+                      {job.requiredExp} Years
+                    </div>
 
-        <div className="badge badge-soft badge-primary badge-sm">
-          ₹{job.salary.min} - ₹{job.salary.max} LPA
-        </div>
-      </div>
-    </div>
+                    <div className="badge badge-soft badge-primary badge-sm">
+                      ₹{job.salary.min} - ₹{job.salary.max} LPA
+                    </div>
+                  </div>
+                </div>
 
-    <Link
-      to={`/applicant/job/${job._id}`}
-      className="btn btn-primary btn-sm w-full sm:w-auto sm:ml-auto"
-      onClick={() =>
-        document.getElementById("similar_jobs_modal").close()
-      }
-    >
-      View
-    </Link>
-  </li>
-))}
+                <Link
+                  to={`/applicant/job/${job._id}`}
+                  className="btn btn-primary btn-sm w-full sm:w-auto sm:ml-auto"
+                  onClick={() =>
+                    document.getElementById("similar_jobs_modal").close()
+                  }
+                >
+                  View
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <div className="modal-action">

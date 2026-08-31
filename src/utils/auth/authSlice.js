@@ -116,6 +116,11 @@ const authSlice = createSlice({
         state.initializing = false;
       })
 
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "success";
         state.user = action.payload.user;
@@ -123,6 +128,10 @@ const authSlice = createSlice({
         state.error = null;
       })
 
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Invalid credentials!";
+      })
       .addCase(registerUser.fulfilled, (state) => {
         state.status = "success";
         state.error = null;

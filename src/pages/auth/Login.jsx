@@ -30,6 +30,8 @@ const Login = () => {
       });
     } catch (err) {
       console.log(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 

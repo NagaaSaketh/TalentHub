@@ -86,8 +86,17 @@ function Filters({ searchParams, setSearchParams }) {
             <input
               type="radio"
               name="experience"
-              checked={searchParams.get("requiredExp") === "1"}
-              onChange={() => updateParam("requiredExp", "1")}
+              checked={
+                searchParams.get("minExp") === "0" &&
+                searchParams.get("maxExp") === "1"
+              }
+              onChange={() => {
+                const params = new URLSearchParams(searchParams);
+                params.set("minExp", "0");
+                params.set("maxExp", "1");
+                params.delete("requiredExp");
+                setSearchParams(params);
+              }}
             />
             0 - 1 Years
           </label>
@@ -96,8 +105,17 @@ function Filters({ searchParams, setSearchParams }) {
             <input
               type="radio"
               name="experience"
-              checked={searchParams.get("requiredExp") === "3"}
-              onChange={() => updateParam("requiredExp", "3")}
+              checked={
+                searchParams.get("minExp") === "1" &&
+                searchParams.get("maxExp") === "3"
+              }
+              onChange={() => {
+                const params = new URLSearchParams(searchParams);
+                params.set("minExp", "1");
+                params.set("maxExp", "3");
+                params.delete("requiredExp");
+                setSearchParams(params);
+              }}
             />
             1 - 3 Years
           </label>
@@ -106,8 +124,17 @@ function Filters({ searchParams, setSearchParams }) {
             <input
               type="radio"
               name="experience"
-              checked={searchParams.get("requiredExp") === "5"}
-              onChange={() => updateParam("requiredExp", "5")}
+              checked={
+                searchParams.get("minExp") === "3" &&
+                searchParams.get("maxExp") === "5"
+              }
+              onChange={() => {
+                const params = new URLSearchParams(searchParams);
+                params.set("minExp", "3");
+                params.set("maxExp", "5");
+                params.delete("requiredExp");
+                setSearchParams(params);
+              }}
             />
             3 - 5 Years
           </label>
@@ -116,8 +143,17 @@ function Filters({ searchParams, setSearchParams }) {
             <input
               type="radio"
               name="experience"
-              checked={searchParams.get("requiredExp") === "6"}
-              onChange={() => updateParam("requiredExp", "6")}
+              checked={
+                !searchParams.get("minExp") &&
+                searchParams.get("requiredExp") === "5"
+              }
+              onChange={() => {
+                const params = new URLSearchParams(searchParams);
+                params.set("requiredExp", "5");
+                params.delete("minExp");
+                params.delete("maxExp");
+                setSearchParams(params);
+              }}
             />
             5+ Years
           </label>
@@ -126,20 +162,19 @@ function Filters({ searchParams, setSearchParams }) {
 
       <div className="mb-5">
         <h3 className="text-sm font-semibold mb-2">Salary Range</h3>
-
         <input
           type="range"
           min="0"
           max="20"
           step="1"
-          value={searchParams.get("minSalary") || 0}
-          onChange={(e) => updateParam("minSalary", e.target.value)}
+          value={searchParams.get("maxSalary") || 0}
+          onChange={(e) => updateParam("maxSalary", e.target.value)}
           className="range range-primary range-xs"
         />
 
         <div className="flex justify-between mt-2 text-sm">
           <span>₹0</span>
-          <span>₹{searchParams.get("minSalary") || 0} LPA</span>
+          <span>₹{searchParams.get("maxSalary") || 0} LPA</span>
         </div>
       </div>
 
