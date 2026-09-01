@@ -17,6 +17,7 @@ const AllApplications = () => {
   const isWithdrawn = selectedApplication?.status === "Withdrawn";
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [promptError, setPromptError] = useState("");
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,9 +58,19 @@ const AllApplications = () => {
   };
 
   const handleAskAI = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim()) {
+      setPromptError("Please enter a question about your applicants.");
 
-    const question = prompt;
+      setTimeout(() => {
+        setPromptError("");
+      }, 3000);
+
+      return;
+    }
+
+    setPromptError("");
+
+    const question = prompt.trim();
 
     setMessages((prev) => [
       ...prev,
@@ -92,9 +103,9 @@ const AllApplications = () => {
           content: err.response?.data?.message || "AI is unavailable.",
         },
       ]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -113,7 +124,7 @@ const AllApplications = () => {
   }, [success, error]);
 
   return (
-    <ul className="list bg-base-100 rounded-box shadow-md w-full overflow-hidden">
+    <ul className="list bg-base-100 rounded-box shadow-md w-full overflow-visible">
       <li className="p-4 sm:p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <h2 className="text-xl sm:text-2xl font-bold">All Applications</h2>
 
@@ -268,7 +279,7 @@ const AllApplications = () => {
 
               <ul
                 tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box shadow-lg border w-52 z-50"
+                className="dropdown-content menu bg-base-100 rounded-box shadow-lg border w-52 z-100"
               >
                 <li>
                   <button
@@ -564,21 +575,46 @@ const AllApplications = () => {
                   )}
                 </div>
 
-                <div className="mt-5 flex flex-col sm:flex-row gap-2">
-                  <input
-                    className="input input-bordered flex-1 w-full"
-                    placeholder="Ask about your applicants..."
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAskAI()}
-                  />
+                <div className="mt-5">
+                  {promptError && (
+                    <div className="alert alert-error mb-3 py-2">
+                      <span>{promptError}</span>
+                    </div>
+                  )}
 
-                  <button
-                    className="btn btn-primary w-full sm:w-auto"
-                    onClick={handleAskAI}
-                  >
-                    Send
-                  </button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      className={`input input-bordered flex-1 w-full ${
+                        promptError ? "input-error" : ""
+                      }`}
+                      placeholder="Ask about your applicants..."
+                      value={prompt}
+                      onChange={(e) => {
+                        setPrompt(e.target.value);
+                        if (e.target.value.trim()) {
+                          setPromptError("");
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAskAI();
+                        }
+                      }}
+                    />
+
+                    <button
+                      className="btn btn-primary w-full sm:w-auto"
+                      onClick={handleAskAI}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      ) : (
+                        "Send"
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 
