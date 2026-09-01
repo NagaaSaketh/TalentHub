@@ -120,7 +120,7 @@ const NavBar = ({ showSearch = true }) => {
 
               {user?.role === "applicant" && (
                 <li>
-                  <Link to="/applicant/jobs">View My Applications</Link>
+                  <Link to="/applicant/myjobs">View My Applications</Link>
                 </li>
               )}
 

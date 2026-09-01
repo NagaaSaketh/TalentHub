@@ -193,7 +193,7 @@ const JobListing = () => {
 
                         <div className="w-full md:w-auto">
                           <Link
-                            to={`job/${job._id}`}
+                            to={`/applicant/job/${job._id}`}
                             className="block w-full md:w-auto"
                           >
                             <motion.button

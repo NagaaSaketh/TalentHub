@@ -6,6 +6,8 @@ import { fetchCurrentUser } from "./utils/auth/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ApplicantLayout from "./components/applicant/ApplicantLayout";
 import RecruiterLayout from "./components/recruiter/RecruiterLayout";
+import ScrollToTop from "./components/ScrollToTop";
+// import ApplicantLanding from "./pages/applicant/ApplicantLanding";
 
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
@@ -31,6 +33,9 @@ const ApplicantDashboard = lazy(
 const ApplicantJobs = lazy(() => import("./pages/applicant/ApplicantJobs"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const ApplicantLanding = lazy(
+  () => import("./pages/applicant/ApplicantLanding"),
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -50,6 +55,7 @@ function App() {
 
   return (
     <>
+    <ScrollToTop/>
       <Suspense
         fallback={
           <div className="min-h-screen flex items-center justify-center">
@@ -118,11 +124,12 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<JobListing />} />
+            <Route index element={<ApplicantLanding />} />
             <Route path="dashboard" element={<ApplicantDashboard />} />
             <Route path="profile" element={<ApplicantProfile />} />
             <Route path="job/:id" element={<JobDetails />} />
-            <Route path="jobs" element={<ApplicantJobs />} />
+            <Route path="jobs" element={<JobListing />} />
+            <Route path="myjobs" element={<ApplicantJobs />} />
           </Route>
           <Route
             path="/recruiter"
