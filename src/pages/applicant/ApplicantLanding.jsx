@@ -52,7 +52,7 @@ const ApplicantLanding = () => {
     const fetchJobs = async () => {
       try {
         const [featuredRes, recentRes] = await Promise.all([
-          api.get("/jobs?sort=salary-desc"),
+          api.get("/jobs/featured"),
           api.get("/jobs?sort=latest"),
         ]);
 
@@ -251,13 +251,14 @@ const ApplicantLanding = () => {
                 Explore some of the best opportunities available right now.
               </p>
             </div>
-
-            <Link
-              to="/applicant/jobs"
-              className="hidden sm:inline-flex btn btn-ghost btn-sm"
-            >
-              View all
-            </Link>
+            {featuredJobs.length > 0 && (
+              <Link
+                to="/applicant/jobs?sort=featured"
+                className="hidden sm:inline-flex btn btn-ghost btn-sm"
+              >
+                View all
+              </Link>
+            )}
           </motion.div>
 
           {loading ? (

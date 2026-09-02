@@ -111,7 +111,7 @@ const JobDetails = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <Link to="/applicant" className="btn btn-ghost btn-sm gap-2 mb-6">
+        <Link to="/applicant/jobs" className="btn btn-ghost btn-sm gap-2 mb-6">
           <ArrowLeft size={18} />
           Back to Jobs
         </Link>

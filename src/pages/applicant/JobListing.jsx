@@ -93,7 +93,11 @@ const JobListing = () => {
                 transition={{ duration: 0.5 }}
                 className="min-w-0"
               >
-                <h1 className="text-3xl sm:text-4xl font-bold">All Jobs</h1>
+                <h1 className="text-3xl sm:text-4xl font-bold">
+                  {searchParams.get("sort") === "featured"
+                    ? "Featured Jobs"
+                    : "All Jobs"}
+                </h1>
 
                 <p className="text-sm sm:text-base text-base-content/60">
                   {jobs.length} jobs found
@@ -109,6 +113,7 @@ const JobListing = () => {
                 onChange={(e) => updateParam("sort", e.target.value)}
               >
                 <option value="latest">Most Recent</option>
+                <option value="featured">Featured Jobs</option>
                 <option value="salary-asc">Salary: Low to High</option>
                 <option value="salary-desc">Salary: High to Low</option>
               </motion.select>

@@ -19,6 +19,7 @@ const PublishJob = () => {
     deadline: "",
     location: "",
     isRemote: false,
+    isFeatured: false,
   };
   const [jobData, setJobData] = useState(initialJobData);
   const [skillInput, setSkillInput] = useState("");
@@ -140,10 +141,20 @@ const PublishJob = () => {
       return "Salary must be greater than 0";
     }
 
-    if (minSalary > maxSalary) {
-      return "Minimum salary cannot be greater than maximum salary";
+    if (minSalary === maxSalary) {
+      setError(
+        "Minimum salary and maximum salary cannot be the same. Please enter a higher maximum salary.",
+      );
+      setSuccess("");
+      return;
     }
 
+    if (minSalary > maxSalary) {
+      setError("Minimum salary cannot be higher than maximum salary.");
+      setSuccess("");
+      return;
+    }
+    
     if (jobData.requiredExp === "") {
       return "Please select required experience";
     }
@@ -251,6 +262,7 @@ const PublishJob = () => {
             : "",
         location: parsed.location || "",
         isRemote: parsed.isRemote || false,
+        isFeatured: parsed.isFeatured || false,
       });
 
       setSkillInput(parsed.skillInput || "");
@@ -296,7 +308,9 @@ const PublishJob = () => {
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Job Title *</legend>
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Job Title <span className="text-error">*</span>
+                      </legend>
 
                       <input
                         name="title"
@@ -308,7 +322,9 @@ const PublishJob = () => {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Company *</legend>
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Company <span className="text-error">*</span>
+                      </legend>
 
                       <input
                         name="company"
@@ -320,8 +336,8 @@ const PublishJob = () => {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Employement Type *
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Employment Type <span className="text-error">*</span>
                       </legend>
 
                       <select
@@ -352,8 +368,8 @@ const PublishJob = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Salary (LPA) *
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Salary <span className="text-error">*</span>
                       </legend>
 
                       <div className="grid grid-cols-2 gap-3">
@@ -378,8 +394,9 @@ const PublishJob = () => {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Experience Required *
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Experience Required{" "}
+                        <span className="text-error">*</span>
                       </legend>
 
                       <select
@@ -411,8 +428,8 @@ const PublishJob = () => {
 
                   <div className="grid lg:grid-cols-2 gap-8">
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Job Description *
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Job Description <span className="text-error">*</span>
                       </legend>
 
                       <textarea
@@ -425,8 +442,8 @@ const PublishJob = () => {
                     </fieldset>
 
                     <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Responsibilities *
+                      <legend className="fieldset-legend text-sm font-semibold">
+                        Responsibilites <span className="text-error">*</span>
                       </legend>
 
                       <input
@@ -474,7 +491,9 @@ const PublishJob = () => {
                   </div>
 
                   <fieldset className="fieldset mt-8">
-                    <legend className="fieldset-legend">Skills *</legend>
+                    <legend className="fieldset-legend text-sm font-semibold">
+                      Skills <span className="text-error">*</span>
+                    </legend>
 
                     <input
                       value={skillInput}
@@ -524,71 +543,142 @@ const PublishJob = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="card bg-base-100 border border-base-300 shadow-md"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4 }}
+                className="card bg-base-100 border border-base-300 shadow-sm"
               >
-                <div className="card-body">
-                  <h2 className="text-2xl font-semibold mb-8">
-                    Additional Information
-                  </h2>
+                <div className="card-body p-5 sm:p-6 lg:p-8">
+                  {/* Header */}
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold">
+                      Additional Information
+                    </h2>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
-                    <fieldset className="fieldset">
-                      <legend className="fieldset-legend">Location *</legend>
+                    <p className="text-sm text-base-content/60 mt-1">
+                      Add the location, deadline, and work preferences for this
+                      job.
+                    </p>
+                  </div>
 
-                      <select
-                        name="location"
-                        value={jobData.location}
-                        onChange={handleChange}
-                        className="select select-bordered w-full"
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="space-y-6">
+                      <fieldset className="fieldset">
+                        <legend className="fieldset-legend text-sm font-semibold">
+                          Location <span className="text-error">*</span>
+                        </legend>
+
+                        <select
+                          name="location"
+                          value={jobData.location}
+                          onChange={handleChange}
+                          className="select select-bordered w-full"
+                        >
+                          <option value="">Select Location</option>
+                          <option value="Bangalore, Karnataka">
+                            Bangalore, Karnataka
+                          </option>
+                          <option value="Chennai, Tamil Nadu">
+                            Chennai, Tamil Nadu
+                          </option>
+                          <option value="Hyderabad, Telangana">
+                            Hyderabad, Telangana
+                          </option>
+                          <option value="Mumbai, Maharashtra">
+                            Mumbai, Maharashtra
+                          </option>
+                          <option value="Pune, Maharashtra">
+                            Pune, Maharashtra
+                          </option>
+                          <option value="Kochi, Kerala">Kochi, Kerala</option>
+                          <option value="Delhi">Delhi</option>
+                        </select>
+                      </fieldset>
+
+                      <fieldset className="fieldset">
+                        <legend className="fieldset-legend text-sm font-semibold">
+                          Application Deadline{" "}
+                          <span className="text-error">*</span>
+                        </legend>
+
+                        <input
+                          type="date"
+                          name="deadline"
+                          value={jobData.deadline}
+                          onChange={handleChange}
+                          className="input input-bordered w-full"
+                        />
+                      </fieldset>
+                    </div>
+
+                    <div className="space-y-4">
+                      <motion.label
+                        whileHover={{ y: -2 }}
+                        transition={{ duration: 0.2 }}
+                        className={`flex items-start gap-4 p-5 rounded-xl border cursor-pointer transition-all ${
+                          jobData.isRemote
+                            ? "border-primary bg-primary/5"
+                            : "border-base-300 bg-base-200/40 hover:border-base-content/20"
+                        }`}
                       >
-                        <option value="">Select Location</option>
-                        <option value="Bangalore, Karnataka">Bangalore</option>
-                        <option value="Chennai, Tamil Nadu">Chennai</option>
-                        <option value="Hyderabad, Telangana">Hyderabad</option>
-                        <option value="Mumbai, Maharashtra">Mumbai</option>
-                        <option value="Pune, Maharashtra">Pune</option>
-                        <option value="Kochi, Kerala">Kerala</option>
-                        <option value="Delhi">Delhi</option>
-                      </select>
-                    </fieldset>
-
-                    <fieldset className="fieldset">
-                      <legend className="fieldset-legend">
-                        Application Deadline *
-                      </legend>
-
-                      <input
-                        type="date"
-                        name="deadline"
-                        value={jobData.deadline}
-                        onChange={handleChange}
-                        className="input input-bordered w-full"
-                      />
-                    </fieldset>
-
-                    <div className="flex lg:justify-center">
-                      <label className="cursor-pointer flex items-center gap-4 bg-base-200 px-6 py-4 rounded-xl w-full lg:w-auto">
                         <input
                           type="checkbox"
                           name="isRemote"
                           checked={jobData.isRemote}
                           onChange={handleChange}
-                          className="checkbox checkbox-primary"
+                          className="checkbox checkbox-primary mt-1"
                         />
 
-                        <div>
-                          <p className="font-semibold">Remote Job</p>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-base">
+                                Remote Job
+                              </p>
 
-                          <p className="text-sm opacity-60">
-                            Applicants can work remotely
-                          </p>
+                              <p className="text-sm text-base-content/60 mt-1">
+                                Applicants can work remotely.
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </label>
+                      </motion.label>
+
+                      <motion.label
+                        whileHover={{ y: -2 }}
+                        transition={{ duration: 0.2 }}
+                        className={`flex items-start gap-4 p-5 rounded-xl border cursor-pointer transition-all ${
+                          jobData.isFeatured
+                            ? "border-primary bg-primary/5"
+                            : "border-base-300 bg-base-200/40 hover:border-base-content/20"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          name="isFeatured"
+                          checked={jobData.isFeatured}
+                          onChange={handleChange}
+                          className="checkbox checkbox-primary mt-1"
+                        />
+
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-base">
+                                Feature this Job
+                              </p>
+
+                              <p className="text-sm text-base-content/60 mt-1">
+                                Highlight this job on the applicant homepage.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.label>
                     </div>
                   </div>
                 </div>
               </motion.div>
+
               <div className="divider mt-10"></div>
 
               <div className="sticky bg-base-100  mt-10 py-5 flex justify-end gap-4">

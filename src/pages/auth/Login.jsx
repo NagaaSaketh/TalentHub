@@ -21,6 +21,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email.trim() && !password.trim()) {
+      dispatch(clearError());
+      setSuccess("Please enter your email address and password.");
+      setTimeout(() => setSuccess(""), 3000);
+      return;
+    }
+
+    if (!email.trim()) {
+      dispatch(clearError());
+      setSuccess("Please enter your email address.");
+      setTimeout(() => setSuccess(""), 3000);
+      return;
+    }
+
+    if (!password.trim()) {
+      dispatch(clearError());
+      setSuccess("Please enter your password.");
+      setTimeout(() => setSuccess(""), 3000);
+      return;
+    }
     setSubmitting(true);
 
     try {
@@ -81,7 +101,7 @@ const Login = () => {
             Login to your account to continue
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Email Address</legend>

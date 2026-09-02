@@ -174,7 +174,14 @@ const RecruiterJobs = () => {
         <div className="modal-box w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedJob && (
             <>
-              <h2 className="text-3xl font-bold">{selectedJob.title}</h2>
+              <h2 className="text-3xl font-bold">
+                {selectedJob.title}{" "}
+                {selectedJob.isFeatured && (
+                  <span className="badge badge-dash badge-xs badge-primary">
+                    FEATURED
+                  </span>
+                )}
+              </h2>
 
               <p className="mt-2">{selectedJob.company}</p>
 
