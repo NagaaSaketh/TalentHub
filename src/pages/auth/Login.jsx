@@ -56,6 +56,14 @@ const Login = () => {
   };
 
   useEffect(() => {
+    dispatch(clearError());
+
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     if (!error) return;
 
     const timer = setTimeout(() => {
@@ -74,13 +82,17 @@ const Login = () => {
       replace: true,
       state: null,
     });
+  }, [location, navigate]);
+
+  useEffect(() => {
+    if (!success) return;
 
     const timer = setTimeout(() => {
       setSuccess("");
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [location, navigate]);
+  }, [success]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4 py-8">
@@ -178,33 +190,30 @@ const Login = () => {
       </motion.div>
       <AnimatePresence>
         {error && (
-          <div className="toast toast-top toast-center z-50">
-            <motion.div
-              key="login-error-toast"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              transition={{ duration: 0.25 }}
-              role="alert"
-              className="alert alert-error"
-            >
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-9999"
+          >
+            <div className="alert alert-error w-max max-w-[90vw] px-5 py-3 shadow-sm">
               <span>{error}</span>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
       <AnimatePresence>
         {success && (
-          <div className="toast toast-top toast-center z-50">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="alert alert-success"
-            >
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-9999"
+          >
+            <div className="alert alert-success w-max max-w-[90vw] px-5 py-3 shadow-sm">
               <span>{success}</span>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import register from "../../assets/register.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -197,6 +197,16 @@ const Register = () => {
     }
   };
 
+  useEffect(() => {
+    if (!formError) return;
+
+    const timer = setTimeout(() => {
+      setFormError(null);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [formError]);
+
   return (
     <div className="relative z-10 flex flex-col h-full">
       <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
@@ -351,15 +361,14 @@ const Register = () => {
             <AnimatePresence>
               {formError && (
                 <motion.div
-                  key="form-error"
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex justify-center mb-4"
+                  exit={{ opacity: 0, y: -20 }}
+                  className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999]"
                 >
-                  <span className="badge badge-error badge-lg">
-                    {formError}
-                  </span>
+                  <div className="alert alert-error w-max max-w-[90vw] px-5 py-3 shadow-sm">
+                    <span>{formError}</span>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

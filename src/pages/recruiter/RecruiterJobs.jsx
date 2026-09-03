@@ -91,12 +91,6 @@ const RecruiterJobs = () => {
           </div>
         </li>
 
-        {status === "loading" && (
-          <li className="flex justify-center py-10">
-            <span className="loading loading-spinner loading-lg"></span>
-          </li>
-        )}
-
         {status === "loading" ? (
           <li className="flex justify-center py-10">
             <span className="loading loading-spinner loading-lg"></span>
@@ -196,7 +190,7 @@ const RecruiterJobs = () => {
                 <div className="bg-base-200 rounded-xl p-4">
                   <p className="text-sm opacity-60">Salary</p>
                   <p className="font-semibold text-md">
-                    ₹{selectedJob.salary.min} - ₹{selectedJob.salary.max} LPA
+                    {selectedJob.salary.min} - {selectedJob.salary.max} LPA
                   </p>
                 </div>
 

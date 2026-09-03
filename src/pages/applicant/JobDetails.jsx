@@ -94,7 +94,13 @@ const JobDetails = () => {
   }
 
   const postedAgo = (createdAt) => {
-    const difference = new Date() - new Date(createdAt);
+    const createdDate = new Date(createdAt);
+    const today = new Date();
+
+    createdDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const difference = today - createdDate;
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
 
     if (days === 0) return "Today";
@@ -102,7 +108,6 @@ const JobDetails = () => {
 
     return `${days} days ago`;
   };
-
   return (
     <>
       <motion.div
@@ -146,8 +151,8 @@ const JobDetails = () => {
 
                       <div className="flex flex-wrap gap-2 sm:gap-6 mt-4 sm:mt-5">
                         <div className="badge badge-outline badge-md">
-                          
-                          {selectedJob?.salary?.min} - {selectedJob?.salary?.max} LPA 
+                          {selectedJob?.salary?.min} -{" "}
+                          {selectedJob?.salary?.max} LPA
                         </div>
 
                         <div className="badge badge-outline badge-md">

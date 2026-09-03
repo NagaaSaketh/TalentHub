@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Menu, IndianRupee, MapPin, Briefcase } from "lucide-react";
+import { Menu, IndianRupee, MapPin, Briefcase, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 import FilterBar from "../../components/applicant/FilterBar";
@@ -50,6 +50,22 @@ const JobListing = () => {
   };
 
   console.log(jobs);
+
+  const postedAgo = (createdAt) => {
+    const createdDate = new Date(createdAt);
+    const today = new Date();
+
+    createdDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const difference = today - createdDate;
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    if (days === 0) return "Today";
+    if (days === 1) return "Yesterday";
+
+    return `${days} days ago`;
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -191,6 +207,12 @@ const JobListing = () => {
                               <div className="flex items-center gap-1 min-w-0">
                                 <MapPin size={16} className="shrink-0" />
                                 <span className="truncate">{job.location}</span>
+                              </div>
+                              <div className="flex items-center gap-1 min-w-0 badge badge-sm badge-primary badge-outline">
+                                <Clock size={16} className="shrink-0" />
+                                <span className="truncate">
+                                  Posted: {postedAgo(job.createdAt)}
+                                </span>
                               </div>
                             </div>
                           </div>

@@ -235,7 +235,13 @@ const AllApplications = () => {
               <span className="text-sm opacity-60 lg:hidden">Experience</span>
 
               <div className="lg:w-32">
-                {application.applicant.totalExperience} Years
+                {application.applicant.totalExperience
+                  ? `${application.applicant.totalExperience} ${
+                      application.applicant.totalExperience === 1
+                        ? "Year"
+                        : "Years"
+                    }`
+                  : "No Experience"}
               </div>
             </div>
 
@@ -625,31 +631,31 @@ const AllApplications = () => {
 
             <AnimatePresence>
               {success && (
-                <div className="toast toast-top toast-center z-50 w-full px-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="alert alert-success w-full sm:w-auto"
-                  >
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="fixed top-4 left-1/2 -translate-x-1/2 z-9999"
+                >
+                  <div className="alert alert-success w-max max-w-[90vw] px-5 py-3 shadow-none">
                     <span>{success}</span>
-                  </motion.div>
-                </div>
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
 
             <AnimatePresence>
               {error && (
-                <div className="toast toast-top toast-center z-50 w-full px-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: -30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -30 }}
-                    className="alert alert-error shadow-lg w-full sm:w-auto"
-                  >
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="fixed top-4 left-1/2 -translate-x-1/2 z-9999"
+                >
+                  <div className="alert alert-error w-max max-w-[90vw] px-5 py-3 shadow-none">
                     <span>{error}</span>
-                  </motion.div>
-                </div>
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
           </motion.li>

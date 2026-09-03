@@ -23,12 +23,16 @@ const ApplicantJobs = () => {
   const [prepData, setPrepData] = useState(null);
   const [prepLoading, setPrepLoading] = useState(false);
   const [prepError, setPrepError] = useState(null);
+
   const data = filter === "Bookmarked" ? bookmarks : applications;
+
   const handleWithdraw = async (jobId) => {
     try {
       const res = await dispatch(withdrawJob(jobId)).unwrap();
+
       setSuccess(res.message || "Application withdrawn successfully!");
       setError("");
+
       document.getElementById("job_modal").close();
       dispatch(fetchApplications(filter));
     } catch (err) {
@@ -41,14 +45,13 @@ const ApplicantJobs = () => {
     try {
       const res = await dispatch(applyJob(jobId)).unwrap();
 
-      setSuccess(res.message);
+      setSuccess(res.message || "Application submitted successfully!");
       setError("");
 
       document.getElementById("job_modal").close();
-
       dispatch(fetchApplications(filter));
     } catch (err) {
-      setError(err);
+      setError(err.message || "Failed to apply again");
       setSuccess("");
     }
   };
@@ -57,6 +60,7 @@ const ApplicantJobs = () => {
     setPrepData(null);
     setPrepError(null);
     setPrepLoading(true);
+
     document.getElementById("interview_prep_modal").showModal();
 
     try {
@@ -75,14 +79,14 @@ const ApplicantJobs = () => {
   const handleRemoveBookmark = async (jobId) => {
     try {
       const res = await dispatch(toggleBookmark(jobId)).unwrap();
+
       setSuccess(res.message || "Bookmark removed successfully!");
       setError("");
 
       document.getElementById("job_modal").close();
-
       dispatch(fetchBookmarks());
     } catch (err) {
-      setError(err);
+      setError(err.message || "Failed to remove bookmark");
       setSuccess("");
     }
   };
@@ -111,14 +115,17 @@ const ApplicantJobs = () => {
       <div className="card bg-base-100 shadow-xl w-full">
         <div className="card-body p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6 sm:mb-8">
-            <div>
+            <div className="min-w-0">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
-                {filter === "Bookmarked" ? "Bookmarked Jobs" : "Applied Jobs"}
+                {filter === "All" ? "Your Jobs" : `${filter} Jobs`}
               </h2>
+
               <p className="mt-2 text-base-content/60 text-sm sm:text-base lg:text-lg">
-                {filter === "Bookmarked"
-                  ? "Jobs you've saved for later."
-                  : "Track the progress of your job applications."}
+                {filter === "All"
+                  ? "Track the progress of your job applications."
+                  : filter === "Bookmarked"
+                    ? "Jobs you've saved for later."
+                    : `Track your ${filter.toLowerCase()} job applications.`}
               </p>
             </div>
 
@@ -147,67 +154,241 @@ const ApplicantJobs = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-base-300">
-            <table className="table table-zebra min-w-175">
-              <thead className="bg-base-200">
-                <tr>
-                  <th>Job</th>
-                  <th>Salary</th>
-                  <th>Applied On</th>
-                  <th>Status</th>
-                  <th className="text-right">Action</th>
-                </tr>
-              </thead>
+          {data.length === 0 ? (
+            <div className="rounded-xl border border-base-300 py-12 text-center">
+              <div className="text-base-content/60">
+                No {filter !== "All" ? filter.toLowerCase() : ""} applications
+                found.
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="hidden lg:block overflow-visible rounded-xl border border-base-300">
+                <table className="table table-zebra">
+                  <thead className="bg-base-200">
+                    <tr>
+                      <th>Job</th>
+                      <th>Salary</th>
+                      <th>Applied On</th>
+                      <th>Status</th>
+                      <th className="text-right">Action</th>
+                    </tr>
+                  </thead>
 
-              <tbody>
-                {data.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="text-center py-12">
-                      <div className="text-base-content/60">
-                        No {filter !== "All" ? filter.toLowerCase() : ""}{" "}
-                        applications found.
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  data.map((application) => (
-                    <tr key={application._id} className="hover">
-                      <td>
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className="avatar placeholder">
-                            <div className="flex items-center justify-center bg-primary text-primary-content rounded-xl w-10 h-10 sm:w-12 sm:h-12">
-                              <span className="font-bold">
-                                {application.job.company.charAt(0)}
-                              </span>
+                  <tbody>
+                    {data.map((application) => (
+                      <tr key={application._id} className="hover">
+                        <td>
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="avatar placeholder shrink-0">
+                              <div className="flex items-center justify-center bg-primary text-primary-content rounded-xl w-12 h-12">
+                                <span className="font-bold">
+                                  {application.job.company.charAt(0)}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="font-bold truncate max-w-xs">
+                                {application.job.title}
+                              </div>
+
+                              <div className="text-sm opacity-60 truncate max-w-xs">
+                                {application.job.company}
+                              </div>
                             </div>
                           </div>
+                        </td>
 
-                          <div>
-                            <div className="font-bold text-sm sm:text-base">
-                              {application.job.title}
-                            </div>
+                        <td>
+                          {application.job.salary.min} -{" "}
+                          {application.job.salary.max} LPA
+                        </td>
 
-                            <div className="text-xs sm:text-sm opacity-60">
-                              {application.job.company}
+                        <td>
+                          {filter === "Bookmarked"
+                            ? "-"
+                            : new Date(
+                                application.createdAt,
+                              ).toLocaleDateString("en-GB")}
+                        </td>
+
+                        <td>
+                          {filter === "Bookmarked" ? (
+                            <div className="badge badge-secondary">
+                              Bookmarked
                             </div>
+                          ) : (
+                            <div
+                              className={`badge badge-md ${
+                                application.status === "Applied"
+                                  ? "badge-info"
+                                  : application.status === "Shortlisted"
+                                    ? "badge-success"
+                                    : application.status === "Rejected"
+                                      ? "badge-error"
+                                      : "badge-warning"
+                              }`}
+                            >
+                              {application.status}
+                            </div>
+                          )}
+                        </td>
+
+                        <td className="text-right">
+                          <div className="dropdown dropdown-end">
+                            <button className="btn btn-ghost btn-sm btn-circle min-w-10 min-h-10">
+                              <MoreVertical size={18} />
+                            </button>
+
+                            <ul className="dropdown-content font-semibold z-50 menu p-2 shadow bg-base-100 rounded-box w-56">
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    setSelectedApplication(application);
+                                    document
+                                      .getElementById("job_modal")
+                                      .showModal();
+                                  }}
+                                >
+                                  View Application Details
+                                </button>
+                              </li>
+
+                              {(application.status === "Applied" ||
+                                application.status === "Shortlisted") && (
+                                <li>
+                                  <button
+                                    onClick={() =>
+                                      handlePrepareInterview(
+                                        application.job._id,
+                                      )
+                                    }
+                                    className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <Sparkles className="w-4 h-4 text-violet-600" />
+
+                                      <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
+                                        Interview Coach
+                                      </span>
+                                    </div>
+
+                                    <span className="badge badge-secondary badge-xs animate-pulse">
+                                      AI
+                                    </span>
+                                  </button>
+                                </li>
+                              )}
+                            </ul>
                           </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="lg:hidden space-y-4">
+                {data.map((application) => (
+                  <div
+                    key={application._id}
+                    className="rounded-xl border border-base-300 bg-base-100 shadow-sm p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="avatar placeholder shrink-0">
+                        <div className="flex items-center justify-center bg-primary text-primary-content rounded-xl w-11 h-11">
+                          <span className="font-bold">
+                            {application.job.company.charAt(0)}
+                          </span>
                         </div>
-                      </td>
+                      </div>
 
-                      <td>
-                        ₹{application.job.salary.min / 100000} - ₹
-                        {application.job.salary.max / 100000} LPA
-                      </td>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-base leading-tight">
+                          {application.job.title}
+                        </div>
 
-                      <td>
-                        {filter === "Bookmarked"
-                          ? "-"
-                          : new Date(application.createdAt).toLocaleDateString(
-                              "en-GB",
-                            )}
-                      </td>
+                        <div className="text-sm opacity-60 mt-1 truncate">
+                          {application.job.company}
+                        </div>
+                      </div>
 
-                      <td>
+                      <div className="dropdown dropdown-end shrink-0">
+                        <button className="btn btn-ghost btn-sm btn-circle min-w-10 min-h-10">
+                          <MoreVertical size={18} />
+                        </button>
+
+                        <ul className="dropdown-content font-semibold z-50 menu p-2 shadow bg-base-100 rounded-box w-56">
+                          <li>
+                            <button
+                              onClick={() => {
+                                setSelectedApplication(application);
+                                document
+                                  .getElementById("job_modal")
+                                  .showModal();
+                              }}
+                            >
+                              View Application Details
+                            </button>
+                          </li>
+
+                          {(application.status === "Applied" ||
+                            application.status === "Shortlisted") && (
+                            <li>
+                              <button
+                                onClick={() =>
+                                  handlePrepareInterview(application.job._id)
+                                }
+                                className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Sparkles className="w-4 h-4 text-violet-600" />
+
+                                  <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
+                                    Interview Coach
+                                  </span>
+                                </div>
+
+                                <span className="badge badge-secondary badge-xs animate-pulse">
+                                  AI
+                                </span>
+                              </button>
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="divider my-3" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <div className="text-base-content/60 mb-1">Salary</div>
+
+                        <div className="font-medium">
+                          ₹{application.job.salary.min} - ₹
+                          {application.job.salary.max} LPA
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-base-content/60 mb-1">
+                          Applied On
+                        </div>
+
+                        <div className="font-medium">
+                          {filter === "Bookmarked"
+                            ? "-"
+                            : new Date(
+                                application.createdAt,
+                              ).toLocaleDateString("en-GB")}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-base-content/60 mb-1">Status</div>
+
                         {filter === "Bookmarked" ? (
                           <div className="badge badge-secondary">
                             Bookmarked
@@ -227,67 +408,23 @@ const ApplicantJobs = () => {
                             {application.status}
                           </div>
                         )}
-                      </td>
-
-                      <td className="text-center sm:text-right">
-                        <div className="dropdown dropdown-end">
-                          <button className="btn btn-ghost btn-sm btn-circle min-w-10 min-h-10">
-                            <MoreVertical size={18} />
-                          </button>
-
-                          <ul className="dropdown-content font-semibold z-50 menu p-2 shadow bg-base-100 rounded-box w-56">
-                            <li>
-                              <button
-                                onClick={() => {
-                                  setSelectedApplication(application);
-                                  document
-                                    .getElementById("job_modal")
-                                    .showModal();
-                                }}
-                              >
-                                View Application Details
-                              </button>
-                            </li>
-                            {(application.status === "Applied" ||
-                              application.status === "Shortlisted") && (
-                              <li>
-                                <button
-                                  onClick={() =>
-                                    handlePrepareInterview(application.job._id)
-                                  }
-                                  className="btn btn-ghost justify-between w-full hover:bg-violet-50 transition-all"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4 text-violet-600" />
-                                    <span className="font-medium bg-linear-to-r from-violet-600 to-cyan-500 bg-clip-text text-transparent">
-                                      Interview Coach
-                                    </span>
-                                  </div>
-
-                                  <span className="badge badge-secondary badge-xs animate-pulse">
-                                    AI
-                                  </span>
-                                </button>
-                              </li>
-                            )}
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
+
       <dialog id="job_modal" className="modal">
-        <div className="modal-box max-w-3xl">
-          <h3 className="text-2xl font-bold mb-6">
+        <div className="modal-box w-11/12 max-w-3xl">
+          <h3 className="text-xl sm:text-2xl font-bold mb-6">
             {selectedApplication?.job.title}
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <p>
               <span className="font-semibold">Company:</span>{" "}
               {selectedApplication?.job.company}
@@ -299,9 +436,9 @@ const ApplicantJobs = () => {
             </p>
 
             <p>
-              <span className="font-semibold">Salary: </span>
-              {selectedApplication?.job.salary?.min / 100000} -
-              {selectedApplication?.job.salary?.max / 100000} LPA
+              <span className="font-semibold">Salary:</span>{" "}
+              {selectedApplication?.job.salary?.min} -{" "}
+              {selectedApplication?.job.salary?.max} LPA
             </p>
 
             <p>
@@ -324,60 +461,68 @@ const ApplicantJobs = () => {
             <div>
               <h4 className="font-semibold mb-2">Job Description</h4>
 
-              <p>{selectedApplication?.job.description}</p>
+              <p className="whitespace-pre-wrap">
+                {selectedApplication?.job.description}
+              </p>
             </div>
           </div>
 
-          <div className="modal-action justify-between">
-            {filter === "Bookmarked" && (
-              <button
-                className="btn btn-error"
-                onClick={() =>
-                  handleRemoveBookmark(selectedApplication.job._id)
-                }
-              >
-                Remove Bookmark
-              </button>
-            )}
-            {selectedApplication?.status === "Applied" && (
-              <button
-                onClick={() => handleWithdraw(selectedApplication.job._id)}
-                className="btn btn-error"
-              >
-                Withdraw Application
-              </button>
-            )}
+          <div className="modal-action flex-col-reverse sm:flex-row sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              {filter === "Bookmarked" && (
+                <button
+                  className="btn btn-error w-full sm:w-auto"
+                  onClick={() =>
+                    handleRemoveBookmark(selectedApplication.job._id)
+                  }
+                >
+                  Remove Bookmark
+                </button>
+              )}
 
-            {selectedApplication?.status === "Withdrawn" && (
-              <button
-                className="btn btn-info"
-                onClick={() => handleApplyAgain(selectedApplication.job._id)}
-              >
-                Apply Again
-              </button>
-            )}
+              {selectedApplication?.status === "Applied" && (
+                <button
+                  onClick={() => handleWithdraw(selectedApplication.job._id)}
+                  className="btn btn-error w-full sm:w-auto"
+                >
+                  Withdraw Application
+                </button>
+              )}
 
-            {selectedApplication?.status === "Shortlisted" && (
-              <button className="btn btn-success" disabled>
-                You're Shortlisted
-              </button>
-            )}
+              {selectedApplication?.status === "Withdrawn" && (
+                <button
+                  className="btn btn-info w-full sm:w-auto"
+                  onClick={() => handleApplyAgain(selectedApplication.job._id)}
+                >
+                  Apply Again
+                </button>
+              )}
 
-            {selectedApplication?.status === "Rejected" && (
-              <button className="btn btn-disabled" disabled>
-                Application Closed
-              </button>
-            )}
+              {selectedApplication?.status === "Shortlisted" && (
+                <button className="btn btn-success w-full sm:w-auto" disabled>
+                  You're Shortlisted
+                </button>
+              )}
+
+              {selectedApplication?.status === "Rejected" && (
+                <button className="btn btn-disabled w-full sm:w-auto" disabled>
+                  Application Closed
+                </button>
+              )}
+            </div>
 
             <form method="dialog">
-              <button className="btn">Close</button>
+              <button className="btn w-full sm:w-auto">Close</button>
             </form>
           </div>
         </div>
       </dialog>
+
       <dialog id="interview_prep_modal" className="modal">
-        <div className="modal-box max-w-2xl">
-          <h3 className="font-bold text-2xl mb-4">✨ Interview Preparation</h3>
+        <div className="modal-box w-11/12 max-w-2xl">
+          <h3 className="font-bold text-xl sm:text-2xl mb-4">
+            ✨ Interview Preparation
+          </h3>
 
           {prepLoading && (
             <div className="flex justify-center py-8">
@@ -395,7 +540,8 @@ const ApplicantJobs = () => {
             <div className="space-y-6">
               <div>
                 <h4 className="font-semibold mb-2">Interview Questions</h4>
-                <ol className="list-decimal list-inside space-y-1">
+
+                <ol className="list-decimal list-inside space-y-2">
                   {prepData.questions.map((q, i) => (
                     <li key={i}>{q}</li>
                   ))}
@@ -404,6 +550,7 @@ const ApplicantJobs = () => {
 
               <div>
                 <h4 className="font-semibold mb-2">Topics to Revise</h4>
+
                 <div className="flex flex-wrap gap-2">
                   {prepData.topicsToRevise.map((topic, i) => (
                     <span key={i} className="badge badge-primary">
@@ -415,7 +562,8 @@ const ApplicantJobs = () => {
 
               <div>
                 <h4 className="font-semibold mb-2">Preparation Tips</h4>
-                <ul className="list-disc list-inside space-y-1 opacity-80">
+
+                <ul className="list-disc list-inside space-y-2 opacity-80">
                   {prepData.preparationTips.map((tip, i) => (
                     <li key={i}>{tip}</li>
                   ))}
@@ -431,6 +579,7 @@ const ApplicantJobs = () => {
           </div>
         </div>
       </dialog>
+
       <AnimatePresence>
         {success && (
           <div className="toast toast-top toast-center z-50">
@@ -445,6 +594,7 @@ const ApplicantJobs = () => {
           </div>
         )}
       </AnimatePresence>
+
       <AnimatePresence>
         {error && (
           <div className="toast toast-top toast-center z-50">

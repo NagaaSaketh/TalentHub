@@ -155,7 +155,7 @@ const ArchivedJobs = () => {
                 <div className="bg-base-200 rounded-xl p-4">
                   <p className="text-sm opacity-60">Salary</p>
                   <p className="font-semibold text-md">
-                    ₹{selectedJob.salary.min} - ₹{selectedJob.salary.max} LPA
+                    {selectedJob.salary.min} - {selectedJob.salary.max} LPA
                   </p>
                 </div>
 

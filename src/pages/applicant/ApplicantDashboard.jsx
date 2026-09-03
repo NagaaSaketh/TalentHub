@@ -183,7 +183,7 @@ const ApplicantDashboard = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="card-title text-2xl">Recommended Jobs</h2>
 
-              <Link to="/applicant" className="btn btn-link">
+              <Link to="/applicant/jobs" className="btn btn-link">
                 View All
               </Link>
             </div>
@@ -215,8 +215,7 @@ const ApplicantDashboard = () => {
 
                     <div className="text-right">
                       <p className="font-semibold text-primary">
-                        ₹{job.salary?.min / 100000} - ₹
-                        {job.salary?.max / 100000} LPA
+                        {job.salary?.min} - {job.salary?.max} LPA
                       </p>
 
                       <Link
