@@ -364,7 +364,7 @@ const Register = () => {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999]"
+                  className="fixed top-4 left-1/2 -translate-x-1/2 z-9999"
                 >
                   <div className="alert alert-error w-max max-w-[90vw] px-5 py-3 shadow-sm">
                     <span>{formError}</span>
